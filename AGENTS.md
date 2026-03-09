@@ -210,3 +210,23 @@ The goal: Be helpful without being annoying. Check in a few times a day, do usef
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
+
+## 记忆管理
+
+### 📝 记录习惯
+- 每次完成重要任务后，更新 `memory/YYYY-MM-DD.md`
+- 学到新知识时，考虑是否值得加入长期记忆
+- 遇到问题并解决后，记录踩坑经验
+- 发现用户偏好时，更新 USER.md
+
+### 📁 文件说明
+- `memory/` - 每日原始日志，记录发生的事情
+- `learnings/` - 每日学习总结，提炼技术知识和经验
+- `MEMORY.md` - 长期核心记忆，精华汇总
+
+### 📝 日志格式
+每日日志 (`memory/YYYY-MM-DD.md`) 应包含：
+- 今日完成的工作
+- 遇到的问题和解决方案
+- 学到的新知识
+- 待办事项
