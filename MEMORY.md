@@ -41,6 +41,20 @@
 - 外部 ws:// 连接需要 `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1`
 - 配对状态查看: `openclaw devices list`
 - 节点状态查看: `openclaw nodes status`
+- **修改文件前先备份** - 用 `cp file file.bak` 备份
+- **修改前说明目的** - 告诉用户修改什么、为什么，获得允许后再改
+
+## 📝 今日修改记录 (2026-03-09)
+
+1. **`/root/.openclaw/openclaw.json`**
+   - 修改：添加节点命令白名单 `allowCommands`
+   - 目的：允许 browser.open、system.run 等命令在 Windows 节点上执行
+   - 备份：`openclaw.json.bak.2`
+
+2. **Windows 节点 `C:\Users\32910\.openclaw\exec-approvals.json`**
+   - 修改：设置 `"defaults": {"mode": "allow"}`
+   - 目的：允许 Windows 节点执行所有命令（需重启节点生效）
+   - 方式：远程创建 test.json 然后 copy 覆盖原文件
 
 ## 👤 关于用户
 
