@@ -6,25 +6,74 @@
 ## 🧠 核心知识库
 
 ### 技术知识
-（记录学到的重要技术点）
+
+**OpenClaw Gateway 配置**
+- bind 模式: `custom` + `customBindHost: "0.0.0.0"` 可允许外部连接
+- 端口: 18789
+- Token 认证方式: `OPENCLAW_GATEWAY_TOKEN` 环境变量
+
+**节点配对 (Node Pairing)**
+- 节点通过 WebSocket 连接到 Gateway
+- 配对命令: `openclaw devices approve <requestId>`
+- 连接需要环境变量: `OPENCLAW_GATEWAY_TOKEN` + `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1`
+- Windows 节点使用 `openclaw node install` 安装为 Scheduled Task
+
+**定时任务**
+- 使用 `openclaw cron add` 创建任务
+- 支持 cron 表达式和时区设置
+- 任务类型: `agentTurn` (isolated) 或 `systemEvent` (main)
 
 ### 踩坑记录
-（记录遇到的问题和解决方案）
+
+1. **gateway bind 模式问题**
+   - `lan` 模式不生效，需用 `custom` + `customBindHost`
+   
+2. **节点配对命令错误**
+   - 错误: `openclaw nodes approve`
+   - 正确: `openclaw devices approve`
+
+3. **Windows 环境变量**
+   - CMD: `set VAR=value`
+   - PowerShell: `$env:VAR="value"`
 
 ### 经验教训
-- 新工作空间首次启动时，memory 目录为空是正常现象
-- 初始化流程：BOOTSTRAP.md → IDENTITY.md / USER.md / SOUL.md → 删除 BOOTSTRAP.md
+
+- 外部 ws:// 连接需要 `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1`
+- 配对状态查看: `openclaw devices list`
+- 节点状态查看: `openclaw nodes status`
 
 ## 👤 关于用户
+
 - **名字**：老大
 - **位置**：Asia/Shanghai
 - **偏好**：喜欢轻松的交流，但交代的事情会认真完成
+- **要求**：
+  - 所有动作需要授权
+  - 记录操作并支持回滚
+  - 白天可主动，晚上 00:00-08:00 安静
 
 ## 📁 重要路径
+
 - `/root/.openclaw/workspace/` - 工作空间根目录
 - `/root/.openclaw/workspace/memory/` - 每日日志
 - `/root/.openclaw/workspace/learnings/` - 学习总结
 - `/root/.openclaw/workspace/MEMORY.md` - 长期记忆
+
+## 🔧 常用命令
+
+```bash
+# 节点管理
+openclaw nodes status
+openclaw devices list
+openclaw devices approve <requestId>
+
+# 定时任务
+openclaw cron list
+openclaw cron run <jobId>
+
+# Gateway
+openclaw gateway restart
+```
 
 ---
 
