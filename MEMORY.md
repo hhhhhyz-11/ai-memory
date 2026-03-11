@@ -22,6 +22,17 @@
 - 使用 `openclaw cron add` 创建任务
 - 支持 cron 表达式和时区设置
 - 任务类型: `agentTurn` (isolated) 或 `systemEvent` (main)
+- **⚠️ payload 提示词不能写死日期**，要用动态描述如"读取昨天的日志"
+
+**SonarQube + GitLab CI**
+- 扫描 Java 项目需要 `sonar.java.binaries` 指定编译产物目录
+- Maven 编译和 Sonar 分析建议在同一 job 执行，避免分 stage 丢失 .class 文件
+- 常用参数：`-T 2C` 并行编译、`-Dmaven.test.skip=true`、`-Dsonar.exclusions`
+
+**SonarQube Issues 批量导出**
+- 页面 PDF 导出有 10000 条限制
+- 方案：导出 Protobuf 格式 → Java 工具转 CSV
+- 工具：SonarPbToCsvConverter + commons-csv
 
 ### 踩坑记录
 
@@ -54,6 +65,17 @@
 2. **建立每日日志习惯**
    - 开始在 memory/YYYY-MM-DD.md 记录每日工作内容
    - 定时任务会在0点读取前一天日志生成学习总结
+
+3. **GitLab CI + SonarQube 流水线调试**
+   - 问题：CI 分成 build + sonar 两个 stage，sonar 阶段没有 .class 文件
+   - 解决：单一 job，Maven 编译和 Sonar 分析一起执行
+   - 优化参数：`-T 2C` 并行编译、`-Dmaven.test.skip=true`、`-Dsonar.exclusions`
+
+4. **SonarQube Issues 批量导出 CSV 方案**
+   - 背景：页面导出 PDF 超过 10000 条限制
+   - 方案：SonarQube 导出 Protobuf → Java 工具转 CSV
+   - 流程：手动导出 .zip → Jenkins Pipeline → shell 脚本转换 → Nginx 文件服务器下载
+   - 成功转换 19874 条 issues
 
 ## 📝 今日修改记录 (2026-03-09)
 
@@ -102,4 +124,4 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-03-09*
+*最后更新：2026-03-11*
