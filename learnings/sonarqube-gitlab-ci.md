@@ -86,25 +86,27 @@ docker run -d \
 在项目中添加 `.gitlab-ci.yml`:
 
 ```yaml
-sonarqube-check:
-  image: 
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-    GIT_DEPTH: "0"
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
-  script: 
-    - sonar-scanner
-  artifacts:
-    paths:
-      - data-board.pdf
-    allow_failure: true
+stages:
+  - build
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+cache:
+  key: ${CI_PROJECT_NAME}-maven
+  policy: pull-push
+  paths:
+    - .m2/repository
+
+build-and-sonar:
+  stage: build
+  image: maven:3.9.6-eclipse-temurin-11
+  script:
+    - mvn -B --no-transfer-progress -T 2C clean package sonar:sonar -DskipTests -Dmaven.test.skip=true -Dsonar.projectKey=bike-server-master -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.sourceEncoding=UTF-8 -Dsonar.java.binaries=target/classes -Dsonar.exclusions=**/target/**,**/test/**,**/resources/** 
+  when: manual
   only:
     - master
+
 ```
 
 ### 配置说明
