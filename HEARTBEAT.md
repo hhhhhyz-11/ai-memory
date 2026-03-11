@@ -1,5 +1,7 @@
 # HEARTBEAT.md
 
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
+## 每日任务
 
-# Add tasks below when you want the agent to check something periodically.
+- [ ] 下午6点汇总当天工作：
+  - 记录到 memory/YYYY-MM-DD.md
+  - 技术内容汇总到 learnings/
