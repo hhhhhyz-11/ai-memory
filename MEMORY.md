@@ -54,6 +54,29 @@
 - 节点状态查看: `openclaw nodes status`
 - **修改文件前先备份** - 用 `cp file file.bak` 备份
 - **修改前说明目的** - 告诉用户修改什么、为什么，获得允许后再改
+- Jenkins workspace 被强制中止可能导致名称变成 `@2` 后缀
+- GitLab 老版本(11.x)使用传统 CI 语法，不支持 modern rules
+
+## 📝 今日修改记录 (2026-03-12)
+
+1. **OpenClaw Node 节点问题排查**
+   - 问题：H 节点掉线
+   - 原因：Windows 环境变量 `OPENCLAW_GATEWAY_TOKEN` 未设置
+   - 解决：设置 token 后节点恢复正常
+
+2. **SonarQube + GitLab CI 增量扫描配置**
+   - 需求：MR 合并到 uat 时触发增量代码扫描
+   - 参数：`-Dsonar.newCode.referenceBranch=uat` 进行增量对比
+   - 限制：GitLab 11.1.4 不支持 modern CI 语法，用 shell 脚本判断
+
+3. **Jenkins workspace 问题**
+   - 问题：rsync 找不到 dist 目录
+   - 原因：workspace 名称变成 `uav-defence-web@2`（之前构建被强制中止）
+   - 解决：修改 yml 配置使用正确的 workspace 路径
+
+4. **技术博客汇总**
+   - Redis 集群水平扩展
+   - Vagrant 从入门到超神
 
 ## 📝 今日修改记录 (2026-03-11)
 
@@ -124,4 +147,4 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-03-11*
+*最后更新：2026-03-13*
