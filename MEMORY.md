@@ -34,6 +34,12 @@
 - 方案：导出 Protobuf 格式 → Java 工具转 CSV
 - 工具：SonarPbToCsvConverter + commons-csv
 
+**AI 短剧制作工具链**
+- Leonardo.ai：AI 图片生成
+- 快手可灵：图生视频
+- Azure TTS：文字转语音配音
+- CapCut：视频剪辑
+
 ### 踩坑记录
 
 1. **gateway bind 模式问题**
@@ -56,6 +62,32 @@
 - **修改前说明目的** - 告诉用户修改什么、为什么，获得允许后再改
 - Jenkins workspace 被强制中止可能导致名称变成 `@2` 后缀
 - GitLab 老版本(11.x)使用传统 CI 语法，不支持 modern rules
+- **SonarQube 增量扫描** 用 `-Dsonar.newCode.referenceBranch=uat` 对比分支
+- **GitLab 保护分支门禁** 需要先在 SonarQube 设置质量门禁
+
+## 📝 今日修改记录 (2026-03-13)
+
+1. **SonarQube 增量扫描配置**
+   - 参数：`-Dsonar.newCode.referenceBranch=uat` 增量对比
+   - 参数：`-Dsonar.pullrequest.key` PR 模式
+   - 适用：feature 分支对比 uat 分支增量扫描
+
+2. **AI 短剧制作工具链推荐**
+   - Leonardo.ai（图片生成）
+   - 快手可灵（图生视频）
+   - Azure TTS（配音）
+   - CapCut（剪辑）
+   - 提供完整分镜脚本和提示词
+
+3. **GitLab CI + SonarQube 门禁配置**
+   - master/uat/release 分支设置保护
+   - GitLab 设置 "Require status checks before merging"
+   - SonarQube 质量门禁自动继承分支关系
+
+4. **建立每日学习总结机制**
+   - 定时任务 0 点执行，读取前一天日志
+   - 生成 learnings/YYYY-MM-DD.md
+   - 更新 MEMORY.md 长期记忆
 
 ## 📝 今日修改记录 (2026-03-12)
 
