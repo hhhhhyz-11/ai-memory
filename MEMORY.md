@@ -34,6 +34,14 @@
 - 方案：导出 Protobuf 格式 → Java 工具转 CSV
 - 工具：SonarPbToCsvConverter + commons-csv
 
+**GitLab 大版本升级**
+- 必须遵循官方升级路径，不能跨版本升级
+- 升级前需恢复到官方版本，不能从第三方修改版直接升级
+- 语言环境 `en_US.UTF-8` 必须匹配，否则 PostgreSQL 启动失败
+- Docker 卷：/var/opt/gitlab（数据）、/var/log/gitlab（日志）、/etc/gitlab（配置）
+- 升级后验证至少 2 小时再继续下一步
+- 加密密钥不兼容问题彻底解决：清空 ci_variables + ci_group_variables + tokens
+
 **AI 短剧制作工具链**
 - Leonardo.ai：AI 图片生成
 - 快手可灵：图生视频
@@ -44,7 +52,7 @@
 
 1. **gateway bind 模式问题**
    - `lan` 模式不生效，需用 `custom` + `customBindHost`
-   
+
 2. **节点配对命令错误**
    - 错误: `openclaw nodes approve`
    - 正确: `openclaw devices approve`
@@ -52,6 +60,14 @@
 3. **Windows 环境变量**
    - CMD: `set VAR=value`
    - PowerShell: `$env:VAR="value"`
+
+4. **GitLab 升级 - gitlab-secrets.json 导致 CI/CD 500**
+   - 问题：旧版本配置文件导致 CI/CD 页面 500 错误（aes256_gcm_decrypt）
+   - 解决：Rails 控制台删除所有变量 `project.variables.destroy_all` 或数据库清空 ci_variables
+
+5. **GitLab 升级 - 克隆地址变成容器 ID**
+   - 问题：升级后克隆地址变成容器 ID 而非 IP 地址
+   - 解决：修改 /etc/gitlab/gitlab.rb 中 external_url 为正确地址
 
 ### 经验教训
 
@@ -64,6 +80,9 @@
 - GitLab 老版本(11.x)使用传统 CI 语法，不支持 modern rules
 - **SonarQube 增量扫描** 用 `-Dsonar.newCode.referenceBranch=uat` 对比分支
 - **GitLab 保护分支门禁** 需要先在 SonarQube 设置质量门禁
+- **GitLab 大版本升级** 必须遵循官方升级路径，不能跨版本
+- **GitLab 升级前** 恢复到官方版本再升级，不能从第三方修改版直接升级
+- **语言环境** `en_US.UTF-8` 必须匹配，否则 PostgreSQL 启动失败
 
 ## 📝 今日修改记录 (2026-03-13)
 
@@ -180,3 +199,50 @@ openclaw gateway restart
 ---
 
 *最后更新：2026-03-14*
+
+## 📝 今日修改记录 (2026-03-11)
+
+1. **定时任务 "每日学习总结" 修复**
+   - 问题：payload 提示词写死日期"今天是2026-03-09"
+   - 修复：改为"读取昨天的日志"（任务0点执行，应总结前一天）
+   - 任务ID：58ce458e-dd09-42ae-af8d-bb002e4cce96
+
+2. **建立每日日志习惯**
+   - 开始在 memory/YYYY-MM-DD.md 记录每日工作内容
+   - 定时任务会在0点读取前一天日志生成学习总结
+
+3. **GitLab CI + SonarQube 流水线调试**
+   - 问题：CI 分成 build + sonar 两个 stage，sonar 阶段没有 .class 文件
+   - 解决：单一 job，Maven 编译和 Sonar 分析一起执行
+   - 优化参数：`-T 2C` 并行编译、`-Dmaven.test.skip=true`、`-Dsonar.exclusions`
+
+4. **SonarQube Issues 批量导出 CSV 方案**
+   - 背景：页面导出 PDF 超过 10000 条限制
+   - 方案：SonarQube 导出 Protobuf → Java 工具转 CSV
+   - 流程：手动导出 .zip → Jenkins Pipeline → shell 脚本转换 → Nginx 文件服务器下载
+   - 成功转换 19874 条 issues
+
+---
+
+## 📝 今日修改记录 (2026-03-17)
+
+1. **GitLab 11.1.4 → 16.1.8 升级**
+   - 完成 Phase 1: 恢复到官方 11.1.4 备份起点 ✅
+   - 完成 Step 1: 11.1.4 → 11.11.8 ✅
+     - 踩坑：gitlab-secrets.json 导致 CI/CD 500 错误，解决：删除所有项目变量
+   - 完成 Step 2: 11.11.8 → 12.0.12 ✅
+     - 踩坑：克隆地址变成容器ID，解决：更新 external_url 配置
+     - 踩坑：aes256_gcm_decrypt 加密错误，解决：清空 ci_variables 和 tokens
+   - 待执行 Step 3: 12.0.12 → 12.1.17
+   - **重要经验**：恢复到相同版本再升级，不能跨版本；语言环境必须匹配
+
+**升级路径**: 11.1.4 → 11.11.8 → 12.0.12 → 12.1.17 → ... → 16.1.8
+
+2. **学习总结归档**
+   - 将 gitlab-upgrade-11.1.4-to-12.0.12.md 移至 learnings/ 目录
+
+---
+
+*最后更新：2026-03-18*
+
+## 📝 今日修改记录 (2026-03-18)
