@@ -246,3 +246,26 @@ openclaw gateway restart
 *最后更新：2026-03-18*
 
 ## 📝 今日修改记录 (2026-03-18)
+
+1. **每日学习总结机制执行** (cron 任务)
+   - 任务ID：58ce458e-dd09-42ae-af8d-bb002e4cce96
+   - 输入：memory/2026-03-17.md（GitLab 升级日志）
+   - 输出：learnings/2026-03-17.md
+   - 内容：GitLab 大版本升级路径、备份恢复、Docker 运维、踩坑记录
+
+2. **Nginx proxy_pass 尾部斜杠问题**
+   - 问题：测试域名转发到生产时返回 404
+   - 原因：`proxy_pass https://oa.gdyunst.com/oaweb/` 会替换路径
+   - 解决：去掉尾部斜杠，保留原始请求路径
+   - 配置层级：测试机 → 生产机 → 第二层转发 → 后端
+
+3. **GitLab CI 自动合并 MR**
+   - 需求：开发无合并权限，MR 测试通过后自动合并
+   - 方案：CI pipeline 末尾添加 `auto-merge` job
+   - 实现：用有 Merge 权限的 PAT 调用 GitLab Merge API
+   - API：`PUT /projects/:id/merge_requests/:iid/merge`
+   - 检查条件：`opened` + `can_be_merged`
+
+---
+
+*最后更新：2026-03-18*

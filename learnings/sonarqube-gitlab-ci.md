@@ -145,3 +145,51 @@ sonar.sourceEncoding=UTF-8
 ### 分析报告生成
 
 - `artifacts` 中的 `data-board.pdf` 需要配置 SonarQube 报告导出插件
+
+## GitLab CI 自动合并 MR
+
+### 需求
+- 开发无合并权限
+- MR 测试通过后自动合并
+
+### 方案
+在 CI pipeline 末尾添加 `auto-merge` job
+
+### 实现
+
+1. 用有 Merge 权限的 PAT（Personal Access Token）
+2. 调用 GitLab Merge API 自动合并
+
+```yaml
+auto-merge:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - apk add --no-cache curl jq
+    - |
+      # 检查 MR 状态
+      MR_STATE=$(curl -s -H "PRIVATE-TOKEN: $MERGE_TOKEN" \
+        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID" | jq -r '.state')
+      
+      # 检查是否可以合并
+      CAN_MERGE=$(curl -s -H "PRIVATE-TOKEN: $MERGE_TOKEN" \
+        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID" | jq -r '.detailed_merge_status')
+      
+      if [ "$MR_STATE" = "opened" ] && [ "$CAN_MERGE" = "mergeable" ]; then
+        curl -s -X PUT -H "PRIVATE-TOKEN: $MERGE_TOKEN" \
+          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/merge"
+      fi
+  when: manual
+```
+
+### 关键变量
+
+| 变量 | 说明 |
+|------|------|
+| `MERGE_TOKEN` | 有 Merge 权限的 PAT |
+| `CI_MERGE_REQUEST_IID` | GitLab 自动提供的 MR 编号 |
+
+### GitLab API
+
+- 检查 MR 状态：`GET /projects/:id/merge_requests/:iid`
+- 合并 MR：`PUT /projects/:id/merge_requests/:iid/merge`
