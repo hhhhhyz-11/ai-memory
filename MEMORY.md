@@ -48,6 +48,12 @@
 - Azure TTS：文字转语音配音
 - CapCut：视频剪辑
 
+**GitLab CI 自动合并 MR**
+- 使用有 Merge 权限的 PAT（Personal Access Token）
+- API 端点：`PUT /projects/:id/merge_requests/:iid/merge`
+- 合并条件：MR 状态 `opened` + `can_be_merged` 为 true
+- CI 配置：添加 `MERGE_TOKEN` 变量，使用 curl + jq 执行
+
 ### 踩坑记录
 
 1. **gateway bind 模式问题**
@@ -68,6 +74,11 @@
 5. **GitLab 升级 - 克隆地址变成容器 ID**
    - 问题：升级后克隆地址变成容器 ID 而非 IP 地址
    - 解决：修改 /etc/gitlab/gitlab.rb 中 external_url 为正确地址
+
+6. **Nginx 代理转发 404 问题**
+   - 问题：测试域名转发到生产域名时返回 404
+   - 原因：`proxy_pass` 尾部斜杠导致路径重复
+   - 解决：去掉 `proxy_pass` 中的尾部路径
 
 ### 经验教训
 
@@ -268,4 +279,4 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-03-18*
+*最后更新：2026-03-19*
