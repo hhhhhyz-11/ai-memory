@@ -80,6 +80,21 @@
    - 原因：`proxy_pass` 尾部斜杠导致路径重复
    - 解决：去掉 `proxy_pass` 中的尾部路径
 
+7. **GitLab 合并返回 405 Method Not Allowed**
+   - 问题：CI 流水线执行合并时返回 405
+   - 原因：MR 状态不允许合并或 squash 配置问题
+   - 解决：合并 API 加参数 `"squash": false`
+
+8. **GitLab 11.1.4 不支持 interruptible**
+   - 问题：CI 配置包含 `interruptible: true` 导致验证失败
+   - 原因：GitLab 11.x 不支持 modern CI 的 interruptible 参数
+   - 解决：移除该参数
+
+9. **GitLab 重复流水线问题**
+   - 问题：提交新代码后，旧 pipeline 还在运行，新 pipeline 等待
+   - 解决：用 API 取消同一分支的旧 pipeline
+   - API：`POST /projects/:id/pipelines/:pipeline_id/cancel`
+
 ### 经验教训
 
 - 外部 ws:// 连接需要 `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1`
@@ -279,4 +294,15 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-03-19*
+*最后更新：2026-03-20*（今日工作已整理至 learnings/2026-03-20.md）
+
+## 📝 今日修改记录 (2026-03-20)
+
+1. **GitLab CI SonarQube 质量门调试**
+   - MR 合并返回 405 错误解决：去掉 `when: manual`，添加 `squash: false` 参数
+   - GitLab 11.1.4 不支持 `interruptible: true` 参数
+
+2. **GitLab CI 流水线重复触发问题**
+   - 场景：MR 还在跑 CI 时提交新代码，导致新旧 pipeline 同时存在
+   - 解决方案：在 job 启动时取消同一分支的旧 running pipeline
+   - API：`/api/v4/projects/:id/pipelines/:pipeline_id/cancel`
