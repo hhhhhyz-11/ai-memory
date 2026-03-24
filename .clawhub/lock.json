@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "skills": {
+    "memory-system": {
+      "version": "1.0.0",
+      "installedAt": 1774319042510
+    },
+    "proactive-agent-lite": {
+      "version": "1.0.0",
+      "installedAt": 1774319282857
+    },
+    "self-learning-skill": {
+      "version": "3.0.2",
+      "installedAt": 1774319342849
+    },
+    "jarvis-core": {
+      "version": "1.0.0",
+      "installedAt": 1774319404192
+    },
+    "voice-wake-say": {
+      "version": "1.0.1",
+      "installedAt": 1774319582201
+    }
+  }
+}

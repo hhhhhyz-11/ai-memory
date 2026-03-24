@@ -1,0 +1,48 @@
+FROM maven:3.9.6-eclipse-temurin-11
+
+# 安装系统工具和依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # 基础工具
+    curl \
+    jq \
+    wget \
+    # Python
+    python3 \
+    python3-pip \
+    # WeasyPrint 中文支持依赖
+    libgdk-pixbuf2.0-0 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libcairo2 \
+    libffi-dev \
+    shared-mime-info \
+    fonts-noto-cjk \
+    fonts-wqy-microhei \
+    fonts-wqy-zenhei \
+    # 其他可能需要的
+    git \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# 安装 Python 库
+RUN pip3 install --no-cache-dir jinja2==3.1.3 weasyprint==55.0 pydyf==0.10.0
+
+# 安装 minio mc（从本地文件复制，需要先下载 mc 到当前目录）
+COPY mc /usr/local/bin/mc
+RUN chmod +x /usr/local/bin/mc
+
+# 创建工作目录
+WORKDIR /workspace
+
+# 验证安装
+RUN echo "=== 验证安装 ===" \
+    && java -version \
+    && mvn -version \
+    && python3 --version \
+    && pip3 --version \
+    && jq --version \
+    && weasyprint --version \
+    && mc --version
+
+# 默认命令
+CMD ["/bin/bash"]

@@ -1,5 +1,15 @@
 # MEMORY.md - 长期记忆
 
+> ⚠️ **永久记忆保护规则**
+> - ❌ 禁止清除记忆
+> - ❌ 禁止重置配置
+> - ❌ 禁止丢失记忆
+> - ✅ 所有记忆永久保存
+> - ✅ 自动增量学习
+> - ✅ 从当前会话开始，完整记录所有历史、偏好、习惯、需求、性格、常用指令
+
+---
+
 > 这是我的核心知识库，记录重要的知识、经验和洞察。
 > 每日日志在 `memory/` 目录，学习总结在 `learnings/` 目录。
 
@@ -199,6 +209,15 @@
   - 记录操作并支持回滚
   - 白天可主动，晚上 00:00-08:00 安静
 
+### 凭证管理
+
+**GitHub Token**: ✅ 已记录（安全存储）
+- 用于推送代码到 GitHub
+
+**配置位置**: 已在 git remote 中配置
+
+---
+
 ## 📁 重要路径
 
 - `/root/.openclaw/workspace/` - 工作空间根目录
@@ -291,6 +310,25 @@ openclaw gateway restart
    - 实现：用有 Merge 权限的 PAT 调用 GitLab Merge API
    - API：`PUT /projects/:id/merge_requests/:iid/merge`
    - 检查条件：`opened` + `can_be_merged`
+
+---
+
+*最后更新：2026-03-25*（今日工作已整理至 learnings/2026-03-23.md）
+
+## 📝 今日修改记录 (2026-03-23)
+
+1. **GitLab CI/CD + SonarQube 完整流水线**
+   - SonarQube 增量扫描 + 质量门检查
+   - PDF 报告生成：Python + WeasyPrint + 中文字体
+   - MinIO 对象存储：mc 命令行配置、bucket 公开访问
+   - MR 评论与钉钉通知
+
+2. **GitHub 仓库管理**
+   - 创建项目仓库：https://github.com/hhhhhyz-11/project
+
+3. **关键踩坑**
+   - MinIO 端口：9000 是 API 端口，9001 是 Console 端口
+   - Bucket 权限：需要用 `mc anonymous set download` 设置公开访问
 
 ---
 

@@ -1,5 +1,11 @@
 # AGENTS.md - Your Workspace
 
+> ⚠️ **永久记忆保护规则**
+> - ❌ 禁止清除记忆
+> - ❌ 禁止重置配置  
+> - ❌ 禁止丢失记忆
+> - ✅ 所有记忆永久保存
+
 This folder is home. Treat it that way.
 
 ## First Run
