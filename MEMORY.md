@@ -64,6 +64,12 @@
 - 合并条件：MR 状态 `opened` + `can_be_merged` 为 true
 - CI 配置：添加 `MERGE_TOKEN` 变量，使用 curl + jq 执行
 
+**Redis 集群水平扩容**
+- 添加节点步骤：创建目录 → 复制配置 → 启动实例 → 添加到集群 → 分配槽 → 添加从节点
+- Hash 槽迁移：`redis-cli -a <password> --cluster reshard <节点>`
+- 下线节点：必须先迁移走 hash 槽，再删除节点
+- 懒卸载 NFS：`umount -l` 处理 busy 状态的挂载点
+
 ### 踩坑记录
 
 1. **gateway bind 模式问题**
@@ -104,6 +110,11 @@
    - 问题：提交新代码后，旧 pipeline 还在运行，新 pipeline 等待
    - 解决：用 API 取消同一分支的旧 pipeline
    - API：`POST /projects/:id/pipelines/:pipeline_id/cancel`
+
+10. **Redis 连接 I/O error**
+    - 问题：Redis CLI 连接报错
+    - 可能原因：端口未开放、防火墙阻断、Redis 进程未启动
+    - 排查：telnet/nc 测试端口、ps 检查进程
 
 ### 经验教训
 
@@ -211,8 +222,8 @@
 
 ### 凭证管理
 
-**GitHub Token**: ✅ 已记录（安全存储）
-- 用于推送代码到 GitHub
+**GitHub Token**: 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
+- 用于推送代码到 GitHub、修改仓库设置等
 
 **配置位置**: 已在 git remote 中配置
 
@@ -313,34 +324,20 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-03-25*（今日工作已整理至 learnings/2026-03-23.md）
+*最后更新：2026-03-25*
 
-## 📝 今日修改记录 (2026-03-23)
+## 📝 今日修改记录 (2026-03-25)
 
-1. **GitLab CI/CD + SonarQube 完整流水线**
-   - SonarQube 增量扫描 + 质量门检查
-   - PDF 报告生成：Python + WeasyPrint + 中文字体
-   - MinIO 对象存储：mc 命令行配置、bucket 公开访问
-   - MR 评论与钉钉通知
+1. **Redis 集群水平扩容**
+   - 添加节点：创建目录 → 复制配置 → 启动实例 → 添加到集群
+   - Hash 槽迁移：使用 `reshard` 命令分配槽到新节点
+   - 添加从节点：`cluster replicate <主节点ID>` 关联
+   - 下线节点：先迁移槽，再 `del-node` 删除
+   - 下线节点无需手动释放 hash 槽，迁移走后集群自动处理
 
-2. **GitHub 仓库管理**
-   - 创建项目仓库：https://github.com/hhhhhyz-11/project
-
-3. **关键踩坑**
-   - MinIO 端口：9000 是 API 端口，9001 是 Console 端口
-   - Bucket 权限：需要用 `mc anonymous set download` 设置公开访问
+2. **NFS 挂载管理**
+   - 失效文件句柄：`umount -l` 懒卸载处理 busy 状态的挂载点
 
 ---
 
-*最后更新：2026-03-20*（今日工作已整理至 learnings/2026-03-20.md）
-
-## 📝 今日修改记录 (2026-03-20)
-
-1. **GitLab CI SonarQube 质量门调试**
-   - MR 合并返回 405 错误解决：去掉 `when: manual`，添加 `squash: false` 参数
-   - GitLab 11.1.4 不支持 `interruptible: true` 参数
-
-2. **GitLab CI 流水线重复触发问题**
-   - 场景：MR 还在跑 CI 时提交新代码，导致新旧 pipeline 同时存在
-   - 解决方案：在 job 启动时取消同一分支的旧 running pipeline
-   - API：`/api/v4/projects/:id/pipelines/:pipeline_id/cancel`
+*最后更新：2026-03-25*
