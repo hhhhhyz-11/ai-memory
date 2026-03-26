@@ -116,6 +116,12 @@
     - 可能原因：端口未开放、防火墙阻断、Redis 进程未启动
     - 排查：telnet/nc 测试端口、ps 检查进程
 
+11. **MySQL 8 密码重置**
+    - 问题：MySQL 8 执行 `SET PASSWORD` 报错 "Unknown system variable 'password'"
+    - 原因：MySQL 8 已废弃 `PASSWORD()` 函数
+    - 解决：使用 `ALTER USER` 或在 skip-grant-tables 模式下直接 INSERT `mysql.user` 表
+    - 注意：`root@192.168.%` 和 `root@localhost` 是两个独立用户
+
 ### 经验教训
 
 - 外部 ws:// 连接需要 `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1`
@@ -340,4 +346,38 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-03-25*
+## 📝 今日修改记录 (2026-03-26)
+
+1. **Redis 集群节点下线**
+   - 成功移除 192.168.0.50 节点
+   - 步骤：先迁移 hash 槽到其他节点 → 设置为 slave → 删除节点
+   - 验证：集群最终保持 3 主节点 (42、44、53)
+
+2. **RabbitMQ 备份恢复方案**
+   - 环境：旧服务器 RabbitMQ 3.8.8 + Erlang 21.3.8.3
+   - 方案：Docker 部署到新服务器 192.168.0.53
+   - 数据目录：/home/rabbitmq/data
+   - 备份命令：`tar -zcf /tmp/rabbitmq-backup-$(date +%Y%m%d).tar.gz /var/lib/rabbitmq/`
+   - 恢复：停止容器 → 解压数据 → 设置权限 → 启动
+
+---
+
+## 📝 今日修改记录 (2026-03-27)
+
+1. **MySQL 8.0 数据迁移（Systemd → Docker）**
+   - 旧服务器：MySQL 8.0.39（Systemd 管理）
+   - 新服务器：Docker MySQL 8.0.43
+   - 备份文件：/tmp/mysql_backup_all_20260326.sql (1.3M)
+   - 文档：运维事项/MySQL数据备份与Docker恢复指南.md
+   - **踩坑**：MySQL 8 不支持 PASSWORD() 函数；root@192.168.% 和 root@localhost 是不同用户；Docker MySQL 需用 INSERT 直接操作用户表
+
+2. **RabbitMQ 数据迁移**
+   - 创建文档：运维事项/RabbitMQ数据迁移指南-Systemd到Docker.md
+   - 推送至 GitHub：hhhhhyz-11/ai-memory
+
+3. **OpenClaw 全局模型切换**
+   - 从 MiniMax-M2.5 切换为 MiniMax-M2.7
+
+---
+
+*最后更新：2026-03-27*
