@@ -122,6 +122,16 @@
     - 解决：使用 `ALTER USER` 或在 skip-grant-tables 模式下直接 INSERT `mysql.user` 表
     - 注意：`root@192.168.%` 和 `root@localhost` 是两个独立用户
 
+12. **Jenkins DingTalk 插件 text 参数类型**
+    - 问题：dingtalk 插件报错，text 参数类型不匹配
+    - 原因：text 必须传 `List<String>`，不能传 `String`
+    - 解决：去掉 `.join('')` 改成列表格式
+
+13. **Trilium 数据库读取**
+    - 问题：直接读取 note.db 无法获取用户笔记
+    - 原因：Trilium 使用 WAL 模式，用户笔记在 WAL 文件中
+    - 解决：通过 Web 界面导出 root.zip 获取完整备份
+
 ### 经验教训
 
 - 外部 ws:// 连接需要 `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1`
@@ -136,6 +146,8 @@
 - **GitLab 大版本升级** 必须遵循官方升级路径，不能跨版本
 - **GitLab 升级前** 恢复到官方版本再升级，不能从第三方修改版直接升级
 - **语言环境** `en_US.UTF-8` 必须匹配，否则 PostgreSQL 启动失败
+- **Jenkins DingTalk 插件** text 参数类型必须是 `List<String>`
+- **Trilium 备份** 需要导出 root.zip，不能直接读 DB
 
 ## 📝 今日修改记录 (2026-03-13)
 
@@ -380,4 +392,30 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-03-27*
+## 📝 今日修改记录 (2026-03-28)
+
+1. **Jenkins DingTalk 插件参数类型**
+   - text 参数必须传 `List<String>`，不能传 `String`
+   - 常见错误：使用 `.join('')` 转为字符串导致报错
+
+2. **K8s 证书更新**
+   - 更新证书后**不需要重启 Docker**
+   - 只需要执行：`kubeadm certs renew` + `kubectl rollout restart`
+
+3. **Nacos 集群部署**
+   - raft 目录必须为空，不能有旧数据
+   - 新节点上线前需清空数据目录
+
+4. **Trilium 数据库备份**
+   - Trilium 运行使用 WAL 模式
+   - 运行时无法直接读取主 DB 文件，用户笔记在 WAL 中
+   - 解决方案：使用 `root.zip` 导出 HTML 格式备份
+
+5. **Trilium 笔记备份**
+   - 从 Windows 节点导出 root.zip
+   - 成功提取 20 篇 HTML 笔记
+   - 保存到 memory/trilium_backup.md (521KB)
+
+---
+
+*最后更新：2026-03-28*
