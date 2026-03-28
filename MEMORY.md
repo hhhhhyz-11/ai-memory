@@ -394,24 +394,28 @@ openclaw gateway restart
 
 ## 📝 今日修改记录 (2026-03-28)
 
-1. **Jenkins DingTalk 插件参数类型**
+1. **OpenClaw 模型切换**
+   - 将默认模型从 MiniMax-M2.5 切换为 MiniMax-M2.7
+   - 模型版本差异可能影响对话风格和能力
+
+2. **Jenkins DingTalk 插件参数类型**
    - text 参数必须传 `List<String>`，不能传 `String`
    - 常见错误：使用 `.join('')` 转为字符串导致报错
 
-2. **K8s 证书更新**
+3. **K8s 证书更新**
    - 更新证书后**不需要重启 Docker**
    - 只需要执行：`kubeadm certs renew` + `kubectl rollout restart`
 
-3. **Nacos 集群部署**
+4. **Nacos 集群部署**
    - raft 目录必须为空，不能有旧数据
    - 新节点上线前需清空数据目录
 
-4. **Trilium 数据库备份**
+5. **Trilium 数据库备份**
    - Trilium 运行使用 WAL 模式
    - 运行时无法直接读取主 DB 文件，用户笔记在 WAL 中
    - 解决方案：使用 `root.zip` 导出 HTML 格式备份
 
-5. **Trilium 笔记备份**
+6. **Trilium 笔记备份**
    - 从 Windows 节点导出 root.zip
    - 成功提取 20 篇 HTML 笔记
    - 保存到 memory/trilium_backup.md (521KB)
