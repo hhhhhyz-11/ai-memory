@@ -51,6 +51,17 @@
 - Docker 卷：/var/opt/gitlab（数据）、/var/log/gitlab（日志）、/etc/gitlab（配置）
 - 升级后验证至少 2 小时再继续下一步
 - 加密密钥不兼容问题彻底解决：清空 ci_variables + ci_group_variables + tokens
+- **升级路径**：11.1.4 → 11.11.8 → 12.0.12 → 12.1.17 → ... → 16.1.8
+
+**MySQL 从库优化**
+- 多线程复制：`slave_parallel_workers=4`, `slave_parallel_type=LOGICAL_CLOCK`
+- 从库延迟常见原因：磁盘 I/O 打满、其他服务争抢（MinIO）
+- 建议调大 `innodb_buffer_pool_size`（从 12G 建议调到 100G）
+- 从库与 MinIO 必须分离磁盘，避免 I/O 争抢
+
+**WSL 网络配置**
+- WSL IP 网段与 Windows/服务器不同，需要端口映射
+- 使用 `netsh interface portproxy` 配置端口映射
 
 **AI 短剧制作工具链**
 - Leonardo.ai：AI 图片生成
@@ -148,6 +159,7 @@
 - **语言环境** `en_US.UTF-8` 必须匹配，否则 PostgreSQL 启动失败
 - **Jenkins DingTalk 插件** text 参数类型必须是 `List<String>`
 - **Trilium 备份** 需要导出 root.zip，不能直接读 DB
+- **MySQL 从库磁盘分离** 从库与 MinIO 共用磁盘会导致复制延迟
 
 ## 📝 今日修改记录 (2026-03-13)
 
@@ -422,4 +434,35 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-03-28*
+## 📝 今日修改记录 (2026-03-30)
+
+1. **GitLab 升级（11.1.4 → 11.11.8）**
+   - 完成 11.1.4 → 11.11.8 升级
+   - 物理备份 data/conf/logs 到 /home/gitlab/
+   - 逻辑备份（gitlab-rake backup:create）
+   - 恢复后验证通过（200+ 项目正常）
+   - **踩坑**：gitlab-restore 时需输入两次 yes
+
+2. **MySQL 从库复制优化**
+   - 开启多线程复制：`slave_parallel_workers=4`
+   - 建议调大 innodb_buffer_pool_size（12G → 100G）
+   - **踩坑**：从库与 MinIO 共用 sdc 盘导致 I/O 争抢
+
+3. **AI 智能运维告警接入**
+   - 研究 Prometheus Alertmanager 接入 OpenClaw
+   - **踩坑**：WSL 网络与 Windows 不同网段，需端口映射
+   - Alertmanager 无直接飞书 Webhook 能力，需 Python 中转
+   - 整理 AI 运维高级提示词套件
+
+4. **GitHub 仓库整理**
+   - 删除 orphan submodule（ystDetection、project）
+   - 合并多个 YAML 为单一 .gitlab-ci.yml
+   - 推送至 GitHub
+
+5. **每日学习总结机制**
+   - learnings/2026-03-30.md 生成完成
+   - 更新 MEMORY.md 长期记忆
+
+---
+
+*最后更新：2026-03-30*
