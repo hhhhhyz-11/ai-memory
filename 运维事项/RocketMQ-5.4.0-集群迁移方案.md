@@ -7,29 +7,28 @@
 >
 > 说明：本方案基于用户实际环境编写，已在生产环境验证通过
 
----
 
 ## 一、集群架构
 
 ```
 +-------------------------+
-|  NameServer-1           |
-|  192.168.0.50:9876     |
+| NameServer-1      |
+| 192.168.0.50:9876   |
 +-------------------------+
 
 +-------------------------+
-|  NameServer-2           |
-|  192.168.0.180:9876    |
+| NameServer-2      |
+| 192.168.0.180:9876  |
 +-------------------------+
 
-     +--------+--------+
-     |                 |
-+-----------+  +-----------+
-| Broker-A  |  | Broker-B  |
-| 53(node2) |  | 50(node1) |
-| 10911     |  | 10911     |
-| Proxy:8081|  | Proxy:8081|
-+-----------+  +-----------+
++--------+--------+
+|         |
++-----------+ +-----------+
+| Broker-A | | Broker-B |
+| 53(node2) | | 50(node1) |
+| 10911   | | 10911   |
+| Proxy:8081| | Proxy:8081|
++-----------+ +-----------+
 ```
 
 **说明：**
@@ -37,7 +36,6 @@
 - 2 台 Broker 都是 Master 角色（无从），消息写入时轮询或按权重分发
 - Proxy 模式（`--enable-proxy`）提供统一接入层，支持 HTTP/gRPC/多语言客户端，客户端只需连 Proxy 不用直连 Broker
 
----
 
 ## 二、迁移前检查清单
 
@@ -48,12 +46,12 @@
 java -version
 
 # 防火墙端口（全部放通或关闭）
-# 9876   - NameServer 通信端口
-# 10911  - Broker 主端口（Producer/Consumer 直连）
-# 10909  - VIP 通道（兼容旧客户端）
-# 10912  - HA 主从复制端口（本次无从可不管）
-# 8081   - Proxy gRPC 端口
-firewall-cmd --list-all  # 查看防火墙状态
+# 9876  - NameServer 通信端口
+# 10911 - Broker 主端口（Producer/Consumer 直连）
+# 10909 - VIP 通道（兼容旧客户端）
+# 10912 - HA 主从复制端口（本次无从可不管）
+# 8081  - Proxy gRPC 端口
+firewall-cmd --list-all # 查看防火墙状态
 ```
 
 ### 2.2 统一目录结构
@@ -63,7 +61,6 @@ firewall-cmd --list-all  # 查看防火墙状态
 mkdir -p /home/rocketmq-all-5.4.0-bin-release/{bin,conf/2m-noslave,logs,store}
 ```
 
----
 
 ## 三、NameServer 启动
 
@@ -85,7 +82,6 @@ tail -f logs/namesrv.log
 The Name Server boot success...
 ```
 
----
 
 ## 四、Broker 配置
 
@@ -145,7 +141,6 @@ namesrvAddr=192.168.0.50:9876;192.168.0.180:9876
 listenPort=10911
 ```
 
----
 
 ## 五、Broker 启动
 
@@ -166,10 +161,10 @@ listenPort=10911
 cd /home/rocketmq-all-5.4.0-bin-release
 
 nohup sh bin/mqbroker \
-  -n "192.168.0.53:9876;192.168.0.180:9876" \
-  -c conf/2m-noslave/broker-a.properties \
-  --enable-proxy \
-  > logs/broker-a.log 2>&1 &
+-n "192.168.0.53:9876;192.168.0.180:9876" \
+-c conf/2m-noslave/broker-a.properties \
+--enable-proxy \
+> logs/broker-a.log 2>&1 &
 ```
 
 **在 node1（50）上执行：**
@@ -178,25 +173,24 @@ nohup sh bin/mqbroker \
 cd /home/rocketmq-all-5.4.0-bin-release
 
 nohup sh bin/mqbroker \
-  -n "192.168.0.50:9876;192.168.0.180:9876" \
-  -c conf/2m-noslave/broker-b.properties \
-  --enable-proxy \
-  > logs/broker-b.log 2>&1 &
+-n "192.168.0.50:9876;192.168.0.180:9876" \
+-c conf/2m-noslave/broker-b.properties \
+--enable-proxy \
+> logs/broker-b.log 2>&1 &
 ```
 
 ### 5.3 验证 Broker 启动
 
 ```bash
 # 查看日志
-tail -f logs/broker-a.log   # node2 上
-tail -f logs/broker-b.log   # node1 上
+tail -f logs/broker-a.log  # node2 上
+tail -f logs/broker-b.log  # node1 上
 
 # 成功标志
 The broker[broker-a, 192.168.0.53:10911] boot success...
 The broker[broker-b, 192.168.0.50:10911] boot success...
 ```
 
----
 
 ## 六、集群状态验证
 
@@ -234,7 +228,6 @@ export ROCKETMQ_SECRET_KEY=Yst@163.com
 sh bin/mqadmin brokerRuntimeInfo -n 192.168.0.53:9876 -b 192.168.0.53:10911
 ```
 
----
 
 ## 七、ACL 认证配置（可选）
 
@@ -290,7 +283,6 @@ export ROCKETMQ_SECRET_KEY=Yst@163.com
 sh bin/mqadmin clusterList -n 192.168.0.180:9876
 ```
 
----
 
 ## 八、Proxy 模式说明
 
@@ -322,11 +314,10 @@ producer.start();
 
 // 方式二：连接 Proxy（5.x 推荐，gRPC 方式）
 producer = DefaultMQProducer.newInstance();
-producer.setEndpoints("192.168.0.53:8081");  // Proxy 地址
+producer.setEndpoints("192.168.0.53:8081"); // Proxy 地址
 producer.start();
 ```
 
----
 
 ## 九、停机迁移步骤（从旧集群切换）
 
@@ -382,7 +373,6 @@ sh bin/mqadmin topicList -n 192.168.0.53:9876
 # 4. 启动应用，观察消息收发是否正常
 ```
 
----
 
 ## 十、常见问题排查
 
@@ -392,7 +382,6 @@ sh bin/mqadmin topicList -n 192.168.0.53:9876
 
 **解决：** 用 `--enable-proxy`（正确写法）
 
----
 
 ### 问题 2：进程退出码 127
 
@@ -410,7 +399,6 @@ ps -ef | grep mqnamesrv
 cat logs/broker-a.log
 ```
 
----
 
 ### 问题 3：broker 注册后 Activated=false
 
@@ -427,7 +415,6 @@ telnet 192.168.0.53 9876
 telnet 192.168.0.53 10911
 ```
 
----
 
 ### 问题 4：mqadmin 查询报 "check signature failed"
 
@@ -442,7 +429,6 @@ sh bin/mqadmin clusterList -n 192.168.0.53:9876
 
 > 注意：这个报错只是查询详细统计失败，不影响 Broker 正常注册和消息收发
 
----
 
 ### 问题 5：应用连不上 RocketMQ
 
@@ -452,7 +438,6 @@ sh bin/mqadmin clusterList -n 192.168.0.53:9876
 3. ACL 认证是否开启，应用是否配置了正确的 accessKey/secretKey
 4. 查看 Broker 日志 `logs/broker.log` 是否有异常
 
----
 
 ## 十一、运维命令速查
 

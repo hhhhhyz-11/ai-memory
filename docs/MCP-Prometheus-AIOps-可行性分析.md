@@ -4,7 +4,6 @@
 >
 > 参考来源：[CSDN - 告别熬夜看仪表盘：实战 MCP 协议对接 Prometheus 监控指标](https://blog.csdn.net/2501_94019869/article/details/157213191)
 
----
 
 ## 一、项目背景与目标
 
@@ -25,7 +24,6 @@
 | 预测预警 | 基于历史趋势分析，提前发现异常苗头 |
 | 闭环告警 | 告警 → AI 分析 → 诊断结论 → 推送飞书，全流程自动化 |
 
----
 
 ## 二、技术方案
 
@@ -33,32 +31,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        数据采集层                                │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
-│  │ Blackbox     │  │ SNMP Exporter│  │ Node Exporter        │  │
-│  │ Exporter     │  │ (网络设备)    │  │ (服务器网络指标)      │  │
-│  └──────┬───────┘  └──────┬───────┘  └──────────┬───────────┘  │
-│         │                 │                     │              │
-│         └─────────────────┼─────────────────────┘              │
-│                           ↓                                      │
-│                    ┌──────────────┐                              │
-│                    │  Prometheus  │                              │
-│                    │  (短期存储)   │                              │
-│                    └──────┬───────┘                              │
-│                           │                                      │
-│              ┌────────────┼────────────┐                         │
-│              ↓                         ↓                         │
-│  ┌───────────────────────┐   ┌──────────────────────────────┐   │
-│  │  VictoriaMetrics       │   │  MCP Server (Node.js)        │   │
-│  │  (长期存储 12个月+)     │   │  封装 PromQL → AI Tools     │   │
-│  └───────────────────────┘   └──────────────┬───────────────┘   │
-│                                              │                   │
-│                           ┌──────────────────┼───────────────┐   │
-│                           ↓                                  ↓   │
-│                 ┌──────────────────┐            ┌─────────────┴─┐ │
-│                 │   OpenClaw AI    │            │ 飞书告警推送   │ │
-│                 │   (智能分析)      │            │               │ │
-│                 └──────────────────┘            └───────────────┘ │
+│            数据采集层                │
+│ ┌──────────────┐ ┌──────────────┐ ┌──────────────────────┐ │
+│ │ Blackbox   │ │ SNMP Exporter│ │ Node Exporter    │ │
+│ │ Exporter   │ │ (网络设备)  │ │ (服务器网络指标)   │ │
+│ └──────┬───────┘ └──────┬───────┘ └──────────┬───────────┘ │
+│     │         │           │       │
+│     └─────────────────┼─────────────────────┘       │
+│              ↓                   │
+│          ┌──────────────┐               │
+│          │ Prometheus │               │
+│          │ (短期存储)  │               │
+│          └──────┬───────┘               │
+│              │                   │
+│       ┌────────────┼────────────┐             │
+│       ↓             ↓             │
+│ ┌───────────────────────┐  ┌──────────────────────────────┐  │
+│ │ VictoriaMetrics    │  │ MCP Server (Node.js)    │  │
+│ │ (长期存储 12个月+)   │  │ 封装 PromQL → AI Tools   │  │
+│ └───────────────────────┘  └──────────────┬───────────────┘  │
+│                       │          │
+│              ┌──────────────────┼───────────────┐  │
+│              ↓                 ↓  │
+│         ┌──────────────────┐      ┌─────────────┴─┐ │
+│         │  OpenClaw AI  │      │ 飞书告警推送  │ │
+│         │  (智能分析)   │      │        │ │
+│         └──────────────────┘      └───────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -72,7 +70,6 @@
 | AI 引擎 | OpenClaw | 支持多 channel、飞书、企业微信等 |
 | 告警推送 | 飞书 Webhook | 企业内部使用，体验好 |
 
----
 
 ## 三、监控指标体系
 
@@ -102,7 +99,6 @@
 | `cpuBusy` | CPU 利用率 |
 | `memUsedPercent` | 内存使用率 |
 
----
 
 ## 四、MCP Server 设计与实现
 
@@ -117,42 +113,42 @@
 ```typescript
 // 工具1: 通用 PromQL 查询
 {
-  name: "query_network_metrics",
-  description: "执行 PromQL 查询网络实时指标，支持流量、延迟、连接数分析",
-  inputSchema: {
-    type: "object",
-    properties: {
-      query: { type: "string", description: "PromQL 语句" },
-      step: { type: "string", description: "查询步长，如 '1m'" }
-    },
-    required: ["query"]
-  }
+name: "query_network_metrics",
+description: "执行 PromQL 查询网络实时指标，支持流量、延迟、连接数分析",
+inputSchema: {
+type: "object",
+properties: {
+query: { type: "string", description: "PromQL 语句" },
+step: { type: "string", description: "查询步长，如 '1m'" }
+},
+required: ["query"]
+}
 }
 
 // 工具2: 网络瓶颈自动诊断
 {
-  name: "get_network_diagnostic_report",
-  description: "传入目标IP或设备名，自动返回多维度网络饱和度分析",
-  inputSchema: {
-    type: "object",
-    properties: {
-      target: { type: "string", description: "目标IP或设备名" }
-    },
-    required: ["target"]
-  }
+name: "get_network_diagnostic_report",
+description: "传入目标IP或设备名，自动返回多维度网络饱和度分析",
+inputSchema: {
+type: "object",
+properties: {
+target: { type: "string", description: "目标IP或设备名" }
+},
+required: ["target"]
+}
 }
 
 // 工具3: 历史趋势分析（预测）
 {
-  name: "predict_network_trend",
-  description: "基于历史数据预测磁盘空间/带宽趋势，提前发现容量风险",
-  inputSchema: {
-    type: "object",
-    properties: {
-      metric: { type: "string", description: "指标名" },
-      hours_ahead: { type: "number", description: "预测几小时后的趋势" }
-    }
-  }
+name: "predict_network_trend",
+description: "基于历史数据预测磁盘空间/带宽趋势，提前发现容量风险",
+inputSchema: {
+type: "object",
+properties: {
+metric: { type: "string", description: "指标名" },
+hours_ahead: { type: "number", description: "预测几小时后的趋势" }
+}
+}
 }
 ```
 
@@ -165,7 +161,6 @@
 | `metrics://network/alerts` | 当前活跃告警列表 | 实时 |
 | `metrics://network/capacity` | 容量预警（磁盘/带宽 > 70%） | 15分钟 |
 
----
 
 ## 五、数据长期存储方案
 
@@ -174,13 +169,13 @@
 ```bash
 # 单节点部署（数据目录 /data/victorialmetrics，保留 12 个月）
 docker run -d \
-  --name victoriametrics \
-  -p 9091:9091 \
-  -p 8428:8428 \
-  -v /data/victorialmetrics:/storage \
-  victoriametrics/victoria-metrics:latest \
-  -storageDataPath=/storage \
-  -retentionPeriod=12
+--name victoriametrics \
+-p 9091:9091 \
+-p 8428:8428 \
+-v /data/victorialmetrics:/storage \
+victoriametrics/victoria-metrics:latest \
+-storageDataPath=/storage \
+-retentionPeriod=12
 ```
 
 ### 5.2 Prometheus remote_write 配置
@@ -188,11 +183,11 @@ docker run -d \
 ```yaml
 # prometheus.yml
 remote_write:
-  - url: "http://<VM_HOST>:9091/api/v1/write"
-    queue_config:
-      max_samples_per_send: 10000
-      batch_send_deadline: 10s
-      capacity: 50000
+- url: "http://<VM_HOST>:9091/api/v1/write"
+queue_config:
+max_samples_per_send: 10000
+batch_send_deadline: 10s
+capacity: 50000
 ```
 
 ### 5.3 存储对比
@@ -204,7 +199,6 @@ remote_write:
 | **VictoriaMetrics** | **几个月~几年** | **轻量、兼容性好、查询快** | **需额外部署** |
 | Thanos | 几年 | 无限扩展 | 部署复杂，资源消耗大 |
 
----
 
 ## 六、AI 智能分析场景
 
@@ -213,10 +207,10 @@ remote_write:
 ```
 1. 告警：网络延迟突增
 2. AI 自动查询：
-   - 当前延迟趋势（promql: rate(ping_duration_seconds[5m])）
-   - 关联带宽使用率（promql: rate(node_network_transmit_bytes[5m])）
-   - TCP 连接数是否异常
-   - 近期是否有变更（配置变更记录）
+- 当前延迟趋势（promql: rate(ping_duration_seconds[5m])）
+- 关联带宽使用率（promql: rate(node_network_transmit_bytes[5m])）
+- TCP 连接数是否异常
+- 近期是否有变更（配置变更记录）
 3. 输出诊断结论：延迟突增原因是 A 端口带宽跑满，建议限流或扩容
 4. 推送飞书给值班人员
 ```
@@ -235,9 +229,9 @@ remote_write:
 ```
 1. 故障恢复后，AI 调取历史指标
 2. 还原故障时间点前后 30 分钟的：
-   - 流量变化曲线
-   - 延迟分布
-   - 连接数变化
+- 流量变化曲线
+- 延迟分布
+- 连接数变化
 3. 输出故障时间线，作为复盘材料
 ```
 
@@ -249,7 +243,6 @@ remote_write:
 3. 提前预警，建议扩容
 ```
 
----
 
 ## 七、误报噪声治理
 
@@ -268,7 +261,6 @@ remote_write:
 | 优先级排序 | AI 根据影响范围自动排序，优先推送高优先级告警 |
 | 沉默期 | 相同告警 30 分钟内不重复推送 |
 
----
 
 ## 八、安全红线设计
 
@@ -280,7 +272,6 @@ remote_write:
 | 飞书白名单 | Webhook URL 白名单验证 | 防止推送伪造 |
 | 最小权限 | MCP Server Token 最小化权限 | 只允许查询，不允许写入 |
 
----
 
 ## 九、实施计划
 
@@ -317,7 +308,6 @@ remote_write:
 - [ ] 编写运维手册
 - [ ] 正式上线
 
----
 
 ## 十、资源预估
 
@@ -340,7 +330,6 @@ remote_write:
 | Blackbox Exporter | ≥ 0.24.x |
 | SNMP Exporter | ≥ 0.23.x |
 
----
 
 ## 十一、风险与应对
 
@@ -352,7 +341,6 @@ remote_write:
 | Prometheus remote_write 延迟 | 低 | 调优 queue_config 参数，增加缓冲区 |
 | 飞书 Webhook 限流 | 低 | 消息合并，减少推送频率 |
 
----
 
 ## 十二、总结
 

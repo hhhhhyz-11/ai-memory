@@ -5,7 +5,6 @@
 > 源环境：192.168.0.50，PostgreSQL 15（Systemd 管理）
 > 目标环境：192.168.0.53，Docker 容器 PostgreSQL 15.15
 
----
 
 ## 一、迁移背景
 
@@ -23,7 +22,6 @@
 - PostGIS 空间扩展
 - 中文语言环境 zh_CN.UTF-8
 
----
 
 ## 二、迁移前准备
 
@@ -56,7 +54,6 @@ docker --version
 docker compose version
 ```
 
----
 
 ## 三、自定义 Dockerfile（解决官方镜像缺陷）
 
@@ -78,9 +75,9 @@ FROM postgres:15.15
 # "invalid locale name: zh_CN.UTF-8"
 # ============================================================
 RUN apt-get update && apt-get install -y \
-    locales \
-    && localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 \
-    && rm -rf /var/lib/apt/lists/*
+locales \
+&& localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 \
+&& rm -rf /var/lib/apt/lists/*
 
 # 设置容器默认语言环境
 ENV LANG=zh_CN.utf8
@@ -92,9 +89,9 @@ ENV LC_ALL=zh_CN.utf8
 # "ERROR: could not open extension control file"
 # ============================================================
 RUN apt-get update && apt-get install -y \
-    postgresql-15-postgis-3 \
-    postgresql-15-postgis-3-scripts \
-    && rm -rf /var/lib/apt/lists/*
+postgresql-15-postgis-3 \
+postgresql-15-postgis-3-scripts \
+&& rm -rf /var/lib/apt/lists/*
 ```
 
 ### 3.2 创建 docker-compose.yml
@@ -105,23 +102,23 @@ RUN apt-get update && apt-get install -y \
 version: '3.8'
 
 services:
-  db:
-    build: .
-    container_name: postgres15
-    restart: always
-    environment:
-      # 管理员密码（导入后会被旧密码覆盖，需手动重置）
-      - POSTGRES_PASSWORD=Yst@163.com
-      # 容器时区
-      - TZ=Asia/Shanghai
-    ports:
-      # 映射到宿主机端口，外部应用通过 <53IP>:5432 访问
-      - "5432:5432"
-    volumes:
-      # 数据持久化目录（宿主机挂载）
-      - /home/postgres15/data:/var/lib/postgresql/data
-      # 导入脚本（方便容器内直接执行导入）
-      - /home/postgres_full_dump.sql:/tmp/postgres_full_dump.sql
+db:
+build: .
+container_name: postgres15
+restart: always
+environment:
+# 管理员密码（导入后会被旧密码覆盖，需手动重置）
+- POSTGRES_PASSWORD=Yst@163.com
+# 容器时区
+- TZ=Asia/Shanghai
+ports:
+# 映射到宿主机端口，外部应用通过 <53IP>:5432 访问
+- "5432:5432"
+volumes:
+# 数据持久化目录（宿主机挂载）
+- /home/postgres15/data:/var/lib/postgresql/data
+# 导入脚本（方便容器内直接执行导入）
+- /home/postgres_full_dump.sql:/tmp/postgres_full_dump.sql
 ```
 
 ### 3.3 目录结构
@@ -130,10 +127,9 @@ services:
 /home/postgres15/
 ├── Dockerfile
 ├── docker-compose.yml
-└── data/          # 运行后自动创建，存放 PG 数据文件
+└── data/     # 运行后自动创建，存放 PG 数据文件
 ```
 
----
 
 ## 四、数据导入（完整流程）
 
@@ -207,8 +203,8 @@ docker exec -it postgres15 sh
 cat >> /var/lib/postgresql/data/pg_hba.conf << 'EOF'
 
 # 允许外部应用访问（根据实际 IP 段调整）
-host    all    all    0.0.0.0/0    md5
-host    all    all    ::0/0        md5
+host  all  all  0.0.0.0/0  md5
+host  all  all  ::0/0    md5
 EOF
 
 # 重载配置（无需重启容器）
@@ -216,7 +212,6 @@ psql -U postgres -c "SELECT pg_reload_conf();"
 exit
 ```
 
----
 
 ## 五、迁移后验证清单
 
@@ -243,7 +238,7 @@ docker exec -it postgres15 psql -U postgres -c "\du"
 docker exec -it postgres15 psql -U postgres -d <空间数据库名> -c "SELECT postgis_full_version();"
 
 # 期望返回类似：
-# POSTGIS="3.3.2" [EXTENSION]  GEOS="3.11.0" PROJ="9.2.0" ...
+# POSTGIS="3.3.2" [EXTENSION] GEOS="3.11.0" PROJ="9.2.0" ...
 ```
 
 ```bash
@@ -273,7 +268,6 @@ psql -h 192.168.0.53 -U postgres -d <库名>
 # 密码：Yst@163.com
 ```
 
----
 
 ## 六、核心避坑点汇总
 
@@ -286,7 +280,6 @@ psql -h 192.168.0.53 -U postgres -d <库名>
 | **密码覆盖** | 镜像配置的密码失效，应用连不上 | 导入后手动 `ALTER USER postgres WITH PASSWORD` |
 | **伪语法错误** | 导入时大量表创建失败的连锁反应 | 忽略它们，后续修复插件/语言环境后重建即可 |
 
----
 
 ## 七、应用切换步骤
 
@@ -310,10 +303,10 @@ psql -h 192.168.0.53 -U postgres -d <库名>
 Spring Boot 项目通常是修改 `application.yml`：
 ```yaml
 spring:
-  datasource:
-    url: jdbc:postgresql://192.168.0.53:5432/<库名>
-    username: postgres
-    password: Yst@163.com
+datasource:
+url: jdbc:postgresql://192.168.0.53:5432/<库名>
+username: postgres
+password: Yst@163.com
 ```
 
 ### 7.3 重启应用
@@ -326,7 +319,6 @@ systemctl restart <应用服务名>
 journalctl -u <应用服务名> -f
 ```
 
----
 
 ## 八、回滚方案
 
@@ -343,7 +335,6 @@ systemctl status postgresql-15
 # 4. 重启应用
 ```
 
----
 
 ## 九、运维命令
 

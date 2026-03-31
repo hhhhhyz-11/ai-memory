@@ -11,7 +11,6 @@
 - Erlang Cookie 必须一致
 - 数据目录权限需要修改为 UID 999:GID 999
 
----
 
 ## 第一步：旧服务器停机与数据打包
 
@@ -44,7 +43,6 @@ cd /var/lib/rabbitmq
 tar -zcvf mq_data.tar.gz mnesia
 ```
 
----
 
 ## 第二步：新服务器环境准备
 
@@ -75,21 +73,20 @@ chown -R 999:999 /home/rabbitmq/data
 
 > 权限不对会导致容器无法启动
 
----
 
 ## 第三步：启动 Docker 容器
 
 ```bash
 docker run -d \
- --name rabbitmq \
- --hostname node1 \
- -p 5672:5672 \
- -p 15672:15672 \
- -v /home/rabbitmq/data:/var/lib/rabbitmq \
- -e RABBITMQ_ERLANG_COOKIE='你复制的Cookie字符串' \
- -e RABBITMQ_DEFAULT_USER=admin \
- -e RABBITMQ_DEFAULT_PASS=admin_password \
- rabbitmq:3.8.8-management
+--name rabbitmq \
+--hostname node1 \
+-p 5672:5672 \
+-p 15672:15672 \
+-v /home/rabbitmq/data:/var/lib/rabbitmq \
+-e RABBITMQ_ERLANG_COOKIE='你复制的Cookie字符串' \
+-e RABBITMQ_DEFAULT_USER=admin \
+-e RABBITMQ_DEFAULT_PASS=admin_password \
+rabbitmq:3.8.8-management
 ```
 
 ### 参数说明
@@ -100,7 +97,6 @@ docker run -d \
 | `-v /home/rabbitmq/data:/var/lib/rabbitmq` | 将宿主机数据目录映射到容器 |
 | `RABBITMQ_ERLANG_COOKIE` | 必须与旧环境一致，否则节点间通信失败 |
 
----
 
 ## 第四步：验证与后续处理
 
@@ -120,7 +116,6 @@ docker logs -f rabbitmq
 - ✅ Exchanges（交换机）是否恢复
 - ✅ Users（用户）是否恢复
 
----
 
 ## 常见问题
 
@@ -136,7 +131,6 @@ A: 检查端口 15672 是否开放，检查防火墙规则
 
 A: 确认节点名（hostname）与旧服务器一致，数据目录路径是否正确
 
----
 
 ## 相关文档
 

@@ -3,7 +3,6 @@
 > 来源：[xingkaixin/mimimax-skills](https://github.com/xingkaixin/mimimax-skills)（MIT 许可证）
 > 安装位置：`~/.openclaw/workspace/skills/mimimax-skills/`
 
----
 
 ## 📦 已安装技能列表
 
@@ -19,7 +18,6 @@
 | `pptx-generator` | PPT 生成/编辑/读取 | PPT、PPT X、演示文稿、幻灯片 |
 | `minimax-xlsx` | Excel 创建/分析/编辑/验证 | Excel、xlsx、表格、财务模型、公式 |
 
----
 
 ## 🚀 使用方法
 
@@ -37,7 +35,6 @@
 用 minimax-xlsx 创建一个财务模型
 ```
 
----
 
 ## 📁 技能目录结构
 
@@ -45,11 +42,11 @@
 
 ```
 skill-name/
-├── SKILL.md           # 主技能说明（自动读取）
-├── references/        # 参考文档（细分主题）
-├── scripts/           # Python/JS 辅助脚本
-├── templates/         # 模板文件
-└── assets/            # 静态资源
+├── SKILL.md      # 主技能说明（自动读取）
+├── references/    # 参考文档（细分主题）
+├── scripts/      # Python/JS 辅助脚本
+├── templates/     # 模板文件
+└── assets/      # 静态资源
 ```
 
 ### 技能详情
@@ -116,22 +113,20 @@ GLSL 着色器技术，包含 4 大模块：
 - 专业财务格式化
 - 包含 OOXML 速查表
 
----
 
 ## 🛠️ 依赖说明
 
 部分技能脚本依赖以下 Python 库：
 
 ```bash
-pip install openai      # MiniMax API 调用
-pip install python-pptx  # PPT 处理
-pip install openpyxl     # Excel 处理
-pip install pandas      # 数据分析
-pip install requests    # HTTP 请求
-pip install Pillow      # 图片处理
+pip install openai   # MiniMax API 调用
+pip install python-pptx # PPT 处理
+pip install openpyxl   # Excel 处理
+pip install pandas   # 数据分析
+pip install requests  # HTTP 请求
+pip install Pillow   # 图片处理
 ```
 
----
 
 ## 📝 备注
 

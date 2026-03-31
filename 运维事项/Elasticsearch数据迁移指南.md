@@ -20,7 +20,6 @@
 2. 将备份目录传输到目标服务器（rsync/scp）
 3. 目标服务器从快照恢复数据
 
----
 
 ## 详细步骤
 
@@ -41,19 +40,19 @@ docker rm jms_es
 
 # 重新启动，添加 path.repo 和备份目录
 docker run -d \
-  --name jms_es \
-  --network elastic \
-  -p 9400:9200 \
-  -p 9500:9300 \
-  -e "discovery.type=single-node" \
-  -e "ES_JAVA_OPTS=-Xms4g -Xmx4g" \
-  -e "ELASTIC_PASSWORD=Yunst@2025es.com" \
-  -e "xpack.security.enabled=true" \
-  -e "path.repo=/usr/share/elasticsearch/backup" \
-  -v /home/elastic_9400/data:/usr/share/elasticsearch/data \
-  -v /home/elastic_9400/logs:/usr/share/elasticsearch/logs \
-  -v /home/elastic_9400/backup:/usr/share/elasticsearch/backup \
-  docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+--name jms_es \
+--network elastic \
+-p 9400:9200 \
+-p 9500:9300 \
+-e "discovery.type=single-node" \
+-e "ES_JAVA_OPTS=-Xms4g -Xmx4g" \
+-e "ELASTIC_PASSWORD=Yunst@2025es.com" \
+-e "xpack.security.enabled=true" \
+-e "path.repo=/usr/share/elasticsearch/backup" \
+-v /home/elastic_9400/data:/usr/share/elasticsearch/data \
+-v /home/elastic_9400/logs:/usr/share/elasticsearch/logs \
+-v /home/elastic_9400/backup:/usr/share/elasticsearch/backup \
+docker.elastic.co/elasticsearch/elasticsearch:7.17.9
 ```
 
 #### 3. 安装 IK 中文分词插件（如未安装）
@@ -92,7 +91,6 @@ chmod -R 777 /home/elastic_9400/backup/
 chown -R 1000:1000 /home/elastic_9400/backup/
 ```
 
----
 
 ### 二、源服务器 - 创建快照
 
@@ -101,10 +99,10 @@ chown -R 1000:1000 /home/elastic_9400/backup/
 ```bash
 curl -u elastic:Yunst@2025es.com -X PUT "http://localhost:9400/_snapshot/backup_repo" -H 'Content-Type: application/json' -d'
 {
-  "type": "fs",
-  "settings": {
-    "location": "/usr/share/elasticsearch/backup"
-  }
+"type": "fs",
+"settings": {
+"location": "/usr/share/elasticsearch/backup"
+}
 }
 '
 ```
@@ -124,7 +122,6 @@ curl -u elastic:Yunst@2025es.com -X GET "http://localhost:9400/_snapshot/backup_
 
 等待 `"state": "SUCCESS"` 表示完成。
 
----
 
 ### 三、传输快照到目标服务器
 
@@ -145,7 +142,6 @@ rsync -avz --progress /home/elastic_9400/backup/ root@目标服务器IP:/home/el
 scp -r /home/elastic_9400/backup/* root@目标服务器IP:/home/elastic_9400/backup/
 ```
 
----
 
 ### 四、目标服务器 - 恢复数据
 
@@ -161,19 +157,19 @@ mkdir -p /home/elastic_9400/{data,logs,backup}
 
 ```bash
 docker run -d \
-  --name jms_es \
-  --network elastic \
-  -p 9200:9200 \
-  -p 9300:9300 \
-  -e "discovery.type=single-node" \
-  -e "ES_JAVA_OPTS=-Xms4g -Xmx4g" \
-  -e "ELASTIC_PASSWORD=Yunst@2025es.com" \
-  -e "xpack.security.enabled=true" \
-  -e "path.repo=/usr/share/elasticsearch/backup" \
-  -v /home/elastic_9400/data:/usr/share/elasticsearch/data \
-  -v /home/elastic_9400/logs:/usr/share/elasticsearch/logs \
-  -v /home/elastic_9400/backup:/usr/share/elasticsearch/backup \
-  elasticsearch-ik:7.17.9
+--name jms_es \
+--network elastic \
+-p 9200:9200 \
+-p 9300:9300 \
+-e "discovery.type=single-node" \
+-e "ES_JAVA_OPTS=-Xms4g -Xmx4g" \
+-e "ELASTIC_PASSWORD=Yunst@2025es.com" \
+-e "xpack.security.enabled=true" \
+-e "path.repo=/usr/share/elasticsearch/backup" \
+-v /home/elastic_9400/data:/usr/share/elasticsearch/data \
+-v /home/elastic_9400/logs:/usr/share/elasticsearch/logs \
+-v /home/elastic_9400/backup:/usr/share/elasticsearch/backup \
+elasticsearch-ik:7.17.9
 ```
 
 等待 ES 启动完成（约 30 秒）。
@@ -183,10 +179,10 @@ docker run -d \
 ```bash
 curl -u elastic:Yunst@2025es.com -X PUT "http://localhost:9200/_snapshot/backup_repo" -H 'Content-Type: application/json' -d'
 {
-  "type": "fs",
-  "settings": {
-    "location": "/usr/share/elasticsearch/backup"
-  }
+"type": "fs",
+"settings": {
+"location": "/usr/share/elasticsearch/backup"
+}
 }
 '
 ```
@@ -203,9 +199,9 @@ curl -u elastic:Yunst@2025es.com -X GET "http://localhost:9200/_snapshot/backup_
 ```bash
 curl -u elastic:Yunst@2025es.com -X POST "http://localhost:9200/_snapshot/backup_repo/snapshot_20250325/_restore" -H 'Content-Type: application/json' -d'
 {
-  "indices": "*,-.geoip_databases,-.security-7,-.kibana*,-.tasks,-.async-search,-.apm*,-.ds-*,-.ilm-history-*,-.logs-deprecation*",
-  "ignore_unavailable": true,
-  "include_global_state": false
+"indices": "*,-.geoip_databases,-.security-7,-.kibana*,-.tasks,-.async-search,-.apm*,-.ds-*,-.ilm-history-*,-.logs-deprecation*",
+"ignore_unavailable": true,
+"include_global_state": false
 }
 '
 ```
@@ -217,22 +213,20 @@ curl -u elastic:Yunst@2025es.com localhost:9200/_cluster/health?pretty
 
 当 `unassigned_shards` 降为 0 时恢复完成。
 
----
 
 ### 五、部署 Kibana（可选）
 
 ```bash
 docker run -d \
-  --name kibana \
-  --network elastic \
-  -p 5601:5601 \
-  -e "ELASTICSEARCH_HOSTS=http://jms_es:9200" \
-  -e "ELASTICSEARCH_USERNAME=elastic" \
-  -e "ELASTICSEARCH_PASSWORD=Yunst@2025es.com" \
-  docker.elastic.co/kibana/kibana:7.17.9
+--name kibana \
+--network elastic \
+-p 5601:5601 \
+-e "ELASTICSEARCH_HOSTS=http://jms_es:9200" \
+-e "ELASTICSEARCH_USERNAME=elastic" \
+-e "ELASTICSEARCH_PASSWORD=Yunst@2025es.com" \
+docker.elastic.co/kibana/kibana:7.17.9
 ```
 
----
 
 ### 六、验证数据一致性
 
@@ -266,7 +260,6 @@ curl -u elastic:Yunst@2025es.com localhost:9400/tb_user_tag/_doc/1
 curl -u elastic:Yunst@2025es.com localhost:9200/tb_user_tag/_doc/1
 ```
 
----
 
 ## 常见问题
 
@@ -294,7 +287,6 @@ cannot restore index [.geoip_databases] because an open index with same name alr
 
 **解决**：使用 exclude 方式恢复，排除系统索引（见上文步骤四.5）
 
----
 
 ## 耗时估算
 
@@ -305,6 +297,5 @@ cannot restore index [.geoip_databases] because an open index with same name alr
 | 恢复数据 | 约 10-20 分钟 |
 | **总计** | **约 1-2 小时** |
 
----
 
 *最后更新：2026-03-25*

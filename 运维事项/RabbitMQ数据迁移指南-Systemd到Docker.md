@@ -10,7 +10,6 @@
 | 关键要点 | 数据目录挂载、权限对齐、节点名称一致性 |
 | 数据完整性 | 迁移前必须停止旧服务 |
 
----
 
 ## 第一步：旧服务器停机与数据打包
 
@@ -47,7 +46,6 @@ cd /var/lib/rabbitmq
 tar -zcvf mq_data.tar.gz mnesia
 ```
 
----
 
 ## 第二步：新服务器环境准备
 
@@ -75,7 +73,6 @@ Docker 官方 RabbitMQ 镜像内部运行的用户 **UID 是 999，GID 也是 99
 chown -R 999:999 /home/rabbitmq/data
 ```
 
----
 
 ## 第三步：启动 Docker 容器
 
@@ -93,15 +90,15 @@ chown -R 999:999 /home/rabbitmq/data
 
 ```bash
 docker run -d \
- --name rabbitmq \
- --hostname node1 \
- -p 5672:5672 \
- -p 15672:15672 \
- -v /home/rabbitmq/data:/var/lib/rabbitmq \
- -e RABBITMQ_ERLANG_COOKIE='你复制的Cookie字符串' \
- -e RABBITMQ_DEFAULT_USER=admin \
- -e RABBITMQ_DEFAULT_PASS=admin_password \
- rabbitmq:3.8.8-management
+--name rabbitmq \
+--hostname node1 \
+-p 5672:5672 \
+-p 15672:15672 \
+-v /home/rabbitmq/data:/var/lib/rabbitmq \
+-e RABBITMQ_ERLANG_COOKIE='你复制的Cookie字符串' \
+-e RABBITMQ_DEFAULT_USER=admin \
+-e RABBITMQ_DEFAULT_PASS=admin_password \
+rabbitmq:3.8.8-management
 ```
 
 ### 3.3 参数说明
@@ -110,7 +107,6 @@ docker run -d \
 - `--hostname node1`：必须和旧服务器的 hostname 保持一致，这样 RabbitMQ 才能找到 `/var/lib/rabbitmq/mnesia/rabbit@node1` 下的数据
 - `RABBITMQ_ERLANG_COOKIE`：确保与旧环境一致，否则权限或集群功能会失效
 
----
 
 ## 第四步：验证与后续处理
 
@@ -137,7 +133,6 @@ docker logs -f rabbitmq
 
 建议在测试环境先验证队列消息可正常收发，确认数据完整后再切换生产流量。
 
----
 
 ## 常见问题
 
@@ -162,7 +157,6 @@ chown -R 999:999 /home/rabbitmq/data
 
 **解决**：通过 `-e RABBITMQ_ERLANG_COOKIE` 参数指定与旧服务器相同的 Cookie
 
----
 
 ## 回滚方案
 
@@ -172,6 +166,5 @@ chown -R 999:999 /home/rabbitmq/data
 2. 在旧服务器重新启动 RabbitMQ：`systemctl start rabbitmq-server`
 3. 检查旧服务器数据完整性后恢复服务
 
----
 
 *文档创建时间：2026-03-26*

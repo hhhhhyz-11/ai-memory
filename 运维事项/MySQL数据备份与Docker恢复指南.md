@@ -11,7 +11,6 @@
 | 新版本 | MySQL 8.0.43 |
 | 备份文件大小 | 1.3M |
 
----
 
 ## 第一部分：旧服务器备份 MySQL
 
@@ -44,7 +43,6 @@ ls -lh /tmp/mysql_backup_all_*.sql
 scp /tmp/mysql_backup_all_20260326.sql root@新服务器IP:/tmp/
 ```
 
----
 
 ## 第二部分：新服务器启动 Docker MySQL
 
@@ -59,11 +57,11 @@ chown -R 999:999 /home/mysql/data
 
 ```bash
 docker run -d \
- --name mysql \
- -p 3306:3306 \
- -e MYSQL_ROOT_PASSWORD='Yunst_50_com.cn' \
- -v /home/mysql/data:/var/lib/mysql \
- mysql:8.0.43
+--name mysql \
+-p 3306:3306 \
+-e MYSQL_ROOT_PASSWORD='Yunst_50_com.cn' \
+-v /home/mysql/data:/var/lib/mysql \
+mysql:8.0.43
 ```
 
 ### 2.3 等待容器完全启动
@@ -88,7 +86,6 @@ docker ps
 
 确保 Status 为 `Up`。
 
----
 
 ## 第三部分：导入备份数据
 
@@ -108,7 +105,6 @@ docker exec -i mysql mysql -u root -pYunst_50_com.cn -e "SHOW DATABASES;"
 
 能看到原服务器的所有数据库即为成功。
 
----
 
 ## 常见问题
 
@@ -142,14 +138,13 @@ docker stop mysql
 docker rm mysql
 rm -rf /home/mysql/data/*
 docker run -d \
- --name mysql \
- -p 3306:3306 \
- -e MYSQL_ROOT_PASSWORD='正确密码' \
- -v /home/mysql/data:/var/lib/mysql \
- mysql:8.0.43
+--name mysql \
+-p 3306:3306 \
+-e MYSQL_ROOT_PASSWORD='正确密码' \
+-v /home/mysql/data:/var/lib/mysql \
+mysql:8.0.43
 ```
 
----
 
 ## 相关操作命令速查
 
@@ -173,6 +168,5 @@ docker logs -f mysql
 docker ps
 ```
 
----
 
 *文档创建时间：2026-03-26*

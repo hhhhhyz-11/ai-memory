@@ -2,7 +2,6 @@
 
 > 详细记录从零开始搭建 OpenClaw 的完整步骤，包含所有命令和配置
 
----
 
 ## 环境准备
 
@@ -48,7 +47,6 @@ fnm install 24
 fnm use 24
 ```
 
----
 
 ## 安装 OpenClaw
 
@@ -79,7 +77,7 @@ openclaw onboard --install-daemon
 **pnpm 方式:**
 ```bash
 pnpm add -g openclaw@latest
-pnpm approve-builds -g   # 批准构建脚本
+pnpm approve-builds -g  # 批准构建脚本
 openclaw onboard --install-daemon
 ```
 
@@ -95,15 +93,14 @@ pnpm link --global
 openclaw onboard --install-daemon
 ```
 
----
 
 ## 首次启动配置
 
 ### 1. 检查安装
 
 ```bash
-openclaw doctor         # 检查配置问题
-openclaw status         # 查看 gateway 状态
+openclaw doctor     # 检查配置问题
+openclaw status     # 查看 gateway 状态
 ```
 
 ### 2. 启动 onboarding 向导
@@ -124,18 +121,17 @@ openclaw onboard
 **最小配置示例：**
 ```json5
 {
-  agents: { defaults: { workspace: "~/.openclaw/workspace" } },
-  channels: {
-    telegram: {
-      enabled: true,
-      botToken: "YOUR_BOT_TOKEN",
-      dmPolicy: "pairing"
-    }
-  }
+agents: { defaults: { workspace: "~/.openclaw/workspace" } },
+channels: {
+telegram: {
+enabled: true,
+botToken: "YOUR_BOT_TOKEN",
+dmPolicy: "pairing"
+}
+}
 }
 ```
 
----
 
 ## 配置通道
 
@@ -145,15 +141,15 @@ openclaw onboard
 2. 配置：
 ```json5
 {
-  channels: {
-    telegram: {
-      enabled: true,
-      botToken: "123456789:ABCdefGHIjklMNOpqrsTUVwxyz",
-      dmPolicy: "pairing",
-      groupPolicy: "allowlist",
-      groupAllowFrom: ["-100123456789"]
-    }
-  }
+channels: {
+telegram: {
+enabled: true,
+botToken: "123456789:ABCdefGHIjklMNOpqrsTUVwxyz",
+dmPolicy: "pairing",
+groupPolicy: "allowlist",
+groupAllowFrom: ["-100123456789"]
+}
+}
 }
 ```
 
@@ -164,13 +160,13 @@ openclaw onboard
 3. 配置：
 ```json5
 {
-  channels: {
-    discord: {
-      enabled: true,
-      botToken: "YOUR_DISCORD_BOT_TOKEN",
-      dmPolicy: "pairing"
-    }
-  }
+channels: {
+discord: {
+enabled: true,
+botToken: "YOUR_DISCORD_BOT_TOKEN",
+dmPolicy: "pairing"
+}
+}
 }
 ```
 
@@ -178,15 +174,15 @@ openclaw onboard
 
 ```json5
 {
-  channels: {
-    whatsapp: {
-      enabled: true,
-      phoneNumberId: "YOUR_PHONE_NUMBER_ID",
-      accessToken: "YOUR_ACCESS_TOKEN",
-      webhookVerifyToken: "YOUR_VERIFY_TOKEN",
-      dmPolicy: "pairing"
-    }
-  }
+channels: {
+whatsapp: {
+enabled: true,
+phoneNumberId: "YOUR_PHONE_NUMBER_ID",
+accessToken: "YOUR_ACCESS_TOKEN",
+webhookVerifyToken: "YOUR_VERIFY_TOKEN",
+dmPolicy: "pairing"
+}
+}
 }
 ```
 
@@ -194,16 +190,15 @@ openclaw onboard
 
 ```json5
 {
-  channels: {
-    webchat: {
-      enabled: true,
-      allowFrom: ["*"]
-    }
-  }
+channels: {
+webchat: {
+enabled: true,
+allowFrom: ["*"]
+}
+}
 }
 ```
 
----
 
 ## 配置管理命令
 
@@ -223,7 +218,6 @@ nano ~/.openclaw/openclaw.json
 
 配置文件修改后自动热加载。
 
----
 
 ## 节点配对（Node）
 
@@ -263,49 +257,46 @@ openclaw devices list
 openclaw devices approve <requestId>
 ```
 
----
 
 ## 常用命令汇总
 
 ```bash
 # 状态
-openclaw status              # gateway 状态
-openclaw health              # 健康检查
-openclaw doctor              # 诊断问题
+openclaw status       # gateway 状态
+openclaw health       # 健康检查
+openclaw doctor       # 诊断问题
 
 # 设备/节点
-openclaw devices list        # 列出配对设备
+openclaw devices list    # 列出配对设备
 openclaw devices approve <id> # 批准设备
-openclaw nodes status        # 节点状态
+openclaw nodes status    # 节点状态
 
 # 配置
-openclaw onboard             # 向导配置
-openclaw configure           # 配置向导
-openclaw config get <path>    # 获取配置
+openclaw onboard       # 向导配置
+openclaw configure      # 配置向导
+openclaw config get <path>  # 获取配置
 openclaw config set <path> <value> # 设置配置
 
 # 日志
-openclaw logs                # 查看日志
-openclaw logs --tail 100     # 最后100行
+openclaw logs        # 查看日志
+openclaw logs --tail 100   # 最后100行
 
 # Gateway
-openclaw gateway restart     # 重启 gateway
-openclaw dashboard           # 打开浏览器 UI
+openclaw gateway restart   # 重启 gateway
+openclaw dashboard      # 打开浏览器 UI
 
 # 定时任务
-openclaw cron list            # 列出任务
-openclaw cron add             # 添加任务
-openclaw cron run <jobId>     # 手动执行任务
+openclaw cron list      # 列出任务
+openclaw cron add       # 添加任务
+openclaw cron run <jobId>   # 手动执行任务
 ```
 
----
 
 ## 访问地址
 
 - **Control UI**: http://127.0.0.1:18789
 - **Webchat**: http://127.0.0.1:18789/webchat
 
----
 
 ## 环境变量（可选）
 
@@ -317,7 +308,6 @@ openclaw cron run <jobId>     # 手动执行任务
 | `OPENCLAW_GATEWAY_TOKEN` | Gateway 认证 token |
 | `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS` | 允许外部 ws 连接 |
 
----
 
 ## 常见问题
 
@@ -348,6 +338,5 @@ openclaw doctor --fix
 cp ~/.openclaw/openclaw.json.bak ~/.openclaw/openclaw.json
 ```
 
----
 
 *文档创建: 2026-03-20*

@@ -5,12 +5,11 @@
 这个流水线用于在 MR 合并前自动执行 SonarQube 代码质量扫描，并通过质量门后自动合并 MR。
 
 ```
-┌─────────────┐    ┌──────────────┐    ┌────────────┐    ┌─────────┐
-│  代码提交    │ -> │ Sonar 扫描   │ -> │ 质量门检查  │ -> │ 自动合并 │
-└─────────────┘    └──────────────┘    └────────────┘    └─────────┘
+┌─────────────┐  ┌──────────────┐  ┌────────────┐  ┌─────────┐
+│ 代码提交  │ -> │ Sonar 扫描  │ -> │ 质量门检查 │ -> │ 自动合并 │
+└─────────────┘  └──────────────┘  └────────────┘  └─────────┘
 ```
 
----
 
 ## 核心概念解释
 
@@ -19,17 +18,17 @@
 ```yaml
 # 定义一个模板（注意开头是 . 表示隐藏模板）
 .sonar_task_template:
-  stage: sonar_and_merge
-  image: sonar-ci:20260323
-  variables:
-    MAVEN_OPTS: "-Dmaven.repo.local=/maven-repo/repository"
-    ...
-  script:
-    - 这里是脚本内容
-  artifacts:
-    paths:
-      - quality-gate.txt
-      - sonar-report.pdf
+stage: sonar_and_merge
+image: sonar-ci:20260323
+variables:
+MAVEN_OPTS: "-Dmaven.repo.local=/maven-repo/repository"
+...
+script:
+- 这里是脚本内容
+artifacts:
+paths:
+- quality-gate.txt
+- sonar-report.pdf
 ```
 
 **作用**：
@@ -37,29 +36,28 @@
 - 开头 `.` 表示隐藏，不会作为独立的 job 执行
 - 其他 job 可以"继承"这个模板，避免代码重复
 
----
 
 ### 2. `extends` - 继承模板
 
 ```yaml
 # UAT 任务继承模板
 sonar-and-merge-uat:
-  extends: .sonar_task_template   # ← 继承上面的模板
-  only:
-    refs:
-      - merge_requests
-  variables:
-    - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "uat"
+extends: .sonar_task_template  # ← 继承上面的模板
+only:
+refs:
+- merge_requests
+variables:
+- $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "uat"
 
 # Master 任务继承模板
 sonar-and-merge-master:
-  extends: .sonar_task_template   # ← 继承上面的模板
-  when: manual
-  only:
-    refs:
-      - merge_requests
-  variables:
-    - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+extends: .sonar_task_template  # ← 继承上面的模板
+when: manual
+only:
+refs:
+- merge_requests
+variables:
+- $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
 ```
 
 **作用**：
@@ -67,7 +65,6 @@ sonar-and-merge-master:
 - 只需要写不同的部分（触发规则、执行方式）
 - 类似编程中的"继承"概念
 
----
 
 ### 3. 如何判断使用哪个任务？
 
@@ -75,50 +72,50 @@ GitLab CI 通过 **变量过滤** 来决定触发哪个 job：
 
 ```yaml
 sonar-and-merge-uat:
-  extends: .sonar_task_template
-  only:
-    refs:
-      - merge_requests
-  variables:
-    - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "uat"   # ← 只有目标是 uat 才触发
+extends: .sonar_task_template
+only:
+refs:
+- merge_requests
+variables:
+- $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "uat"  # ← 只有目标是 uat 才触发
 
 sonar-and-merge-master:
-  extends: .sonar_task_template
-  when: manual
-  only:
-    refs:
-      - merge_requests
-  variables:
-    - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"  # ← 只有目标是 master 才触发
+extends: .sonar_task_template
+when: manual
+only:
+refs:
+- merge_requests
+variables:
+- $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master" # ← 只有目标是 master 才触发
 ```
 
 **判断逻辑**：
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    MR 创建/更新                          │
-│              (merge_requests 事件触发)                   │
+│          MR 创建/更新             │
+│       (merge_requests 事件触发)          │
 └─────────────────────┬───────────────────────────────────┘
-                      │
-                      ▼
+│
+▼
 ┌─────────────────────────────────────────────────────────┐
-│           判断目标分支变量                               │
-│      $CI_MERGE_REQUEST_TARGET_BRANCH_NAME                │
+│      判断目标分支变量                │
+│   $CI_MERGE_REQUEST_TARGET_BRANCH_NAME        │
 └─────────────────────┬───────────────────────────────────┘
-                      │
-          ┌───────────┴───────────┐
-          │                       │
-          ▼                       ▼
-    ┌─────────────┐        ┌─────────────┐
-    │ target=uat  │        │ target=master│
-    └──────┬──────┘        └──────┬──────┘
-           │                      │
-           ▼                      ▼
-    ┌─────────────┐        ┌─────────────┐
-    │执行 sonar-  │        │执行 sonar-   │
-    │and-merge-   │        │and-merge-    │
-    │uat          │        │master        │
-    └─────────────┘        └─────────────┘
+│
+┌───────────┴───────────┐
+│            │
+▼            ▼
+┌─────────────┐    ┌─────────────┐
+│ target=uat │    │ target=master│
+└──────┬──────┘    └──────┬──────┘
+│           │
+▼           ▼
+┌─────────────┐    ┌─────────────┐
+│执行 sonar- │    │执行 sonar-  │
+│and-merge-  │    │and-merge-  │
+│uat     │    │master    │
+└─────────────┘    └─────────────┘
 ```
 
 | 目标分支 | 触发的 Job | 执行方式 |
@@ -126,22 +123,20 @@ sonar-and-merge-master:
 | `uat` | `sonar-and-merge-uat` | **自动**（默认 `on_success`） |
 | `master` | `sonar-and-merge-master` | **手动**（`when: manual`） |
 
----
 
 ### 4. `when: manual` - 手动触发
 
 ```yaml
 sonar-and-merge-master:
-  extends: .sonar_task_template
-  when: manual   # ← 告诉 GitLab 这是手动任务
-  ...
+extends: .sonar_task_template
+when: manual  # ← 告诉 GitLab 这是手动任务
+...
 ```
 
 - 看到 `when: manual`，GitLab 会在 UI 上显示 ⏸️ 小手图标
 - 必须用户手动点击"Play"按钮才会执行
 - 用于生产分支（master）需要人工确认的场景
 
----
 
 ## 完整执行流程
 
@@ -149,13 +144,13 @@ sonar-and-merge-master:
 
 ```
 MR 创建/更新
-     │
-     ▼
+│
+▼
 判断 $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
-     │
-     ├─ uat    ──▶ 自动执行 sonar-and-merge-uat
-     │
-     └─ master ──▶ 等待手动点击 sonar-and-merge-master
+│
+├─ uat  ──▶ 自动执行 sonar-and-merge-uat
+│
+└─ master ──▶ 等待手动点击 sonar-and-merge-master
 ```
 
 ### 2️⃣ 分支校验（脚本内）
@@ -163,19 +158,19 @@ MR 创建/更新
 ```bash
 # 同分支合并跳过
 if [ "$SOURCE" = "$TARGET" ]; then
-  exit 0
+exit 0
 fi
 
 # master 分支校验
 if [ "$TARGET" = "master" ] && [[ ! "$SOURCE" =~ ^release/ ]]; then
-  echo "❌ 禁止合并"
-  exit 1
+echo "❌ 禁止合并"
+exit 1
 fi
 
 # uat 分支校验
 if [ "$TARGET" = "uat" ] && [[ ! "$SOURCE" =~ ^feature/ ]] && [[ ! "$SOURCE" =~ ^hotfix/ ]]; then
-  echo "❌ 禁止合并"
-  exit 1
+echo "❌ 禁止合并"
+exit 1
 fi
 ```
 
@@ -188,11 +183,11 @@ fi
 
 ```bash
 mvn clean verify sonar:sonar \
-  -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-  -Dsonar.pullrequest.key=$CI_MERGE_REQUEST_IID \
-  -Dsonar.pullrequest.branch=$SOURCE \
-  -Dsonar.pullrequest.base=$TARGET \
-  -Dsonar.qualitygate.wait=true
+-Dsonar.projectKey=$SONAR_PROJECT_KEY \
+-Dsonar.pullrequest.key=$CI_MERGE_REQUEST_IID \
+-Dsonar.pullrequest.branch=$SOURCE \
+-Dsonar.pullrequest.base=$TARGET \
+-Dsonar.qualitygate.wait=true
 ```
 
 ### 4️⃣ 质量门检查
@@ -234,57 +229,55 @@ curl -X POST ... "$GITLAB_HOST/.../merge_requests/$IID/notes"
 curl -X PUT ... "$GITLAB_HOST/.../merge_requests/$IID/merge"
 ```
 
----
 
 ## 流程图
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    GitLab CI Pipeline                          │
+│          GitLab CI Pipeline             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  [MR 创建/更新]                                                 │
-│      │                                                         │
-│      ▼                                                         │
-│  [判断目标分支变量]                                             │
-│  $CI_MERGE_REQUEST_TARGET_BRANCH_NAME                          │
-│      │                                                         │
-│      ├──────────────┬──────────────────┐                       │
-│      ▼              ▼                  ▼                       │
-│  ┌─────────┐   ┌─────────┐       ┌─────────┐                  │
-│  │ target= │   │target=  │       │ target= │                  │
-│  │  uat    │   │ master  │       │ 其他    │                  │
-│  └────┬────┘   └────┬────┘       └────┬────┘                  │
-│       │             │                  │                        │
-│       ▼             ▼ (需手动点击)      ▼                        │
-│  ┌─────────┐   ┌─────────┐       ┌─────────┐                  │
-│  │ 自动执行 │   │ 等待手动 │       │ 不执行   │                  │
-│  │ .sona.. │   │ .sona.. │       │         │                  │
-│  └────┬────┘   └────┬────┘       └─────────┘                  │
-│       │             │                                         │
-│       ▼             ▼                                         │
-│  ┌─────────────────────────────────────────┐                  │
-│  │          .sonar_task_template           │                  │
-│  │  1. 分支规则校验                         │                  │
-│  │  2. Maven 编译 + Sonar 扫描              │                  │
-│  │  3. 质量门检查                          │                  │
-│  │  4. 问题统计 & 评级                     │                  │
-│  │  5. 生成 PDF 报告                      │                  │
-│  │  6. 上传 MinIO                         │                  │
-│  │  7. MR 评论 + 自动合并                 │                  │
-│  └────────────────────┬────────────────────┘                   │
-│                       │                                         │
-│            ┌──────────┴──────────┐                             │
-│            ▼                     ▼                             │
-│       质量门通过              质量门失败                         │
-│            │                     │                              │
-│            ▼                     ▼                              │
-│      自动合并 MR           钉钉通知 + 退出                      │
-│                                                                 │
+│                                 │
+│ [MR 创建/更新]                         │
+│   │                             │
+│   ▼                             │
+│ [判断目标分支变量]                       │
+│ $CI_MERGE_REQUEST_TARGET_BRANCH_NAME             │
+│   │                             │
+│   ├──────────────┬──────────────────┐            │
+│   ▼       ▼         ▼            │
+│ ┌─────────┐  ┌─────────┐    ┌─────────┐         │
+│ │ target= │  │target= │    │ target= │         │
+│ │ uat  │  │ master │    │ 其他  │         │
+│ └────┬────┘  └────┬────┘    └────┬────┘         │
+│    │       │         │            │
+│    ▼       ▼ (需手动点击)   ▼            │
+│ ┌─────────┐  ┌─────────┐    ┌─────────┐         │
+│ │ 自动执行 │  │ 等待手动 │    │ 不执行  │         │
+│ │ .sona.. │  │ .sona.. │    │     │         │
+│ └────┬────┘  └────┬────┘    └─────────┘         │
+│    │       │                     │
+│    ▼       ▼                     │
+│ ┌─────────────────────────────────────────┐         │
+│ │     .sonar_task_template      │         │
+│ │ 1. 分支规则校验             │         │
+│ │ 2. Maven 编译 + Sonar 扫描       │         │
+│ │ 3. 质量门检查             │         │
+│ │ 4. 问题统计 & 评级           │         │
+│ │ 5. 生成 PDF 报告           │         │
+│ │ 6. 上传 MinIO             │         │
+│ │ 7. MR 评论 + 自动合并         │         │
+│ └────────────────────┬────────────────────┘          │
+│            │                     │
+│      ┌──────────┴──────────┐               │
+│      ▼           ▼               │
+│    质量门通过       质量门失败             │
+│      │           │               │
+│      ▼           ▼               │
+│   自动合并 MR      钉钉通知 + 退出           │
+│                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
----
 
 ## 所需变量
 
@@ -303,7 +296,6 @@ curl -X PUT ... "$GITLAB_HOST/.../merge_requests/$IID/merge"
 | `MINIO_BUCKET` | MinIO 桶名 | `sonar-reports` |
 | `DINGTALK_WEBHOOK` | 钉钉 webhook | `https://oapi.dingtalk.com/...` |
 
----
 
 ## 常见问题
 
@@ -324,7 +316,6 @@ A:
 - `extends`: 继承模板，YAML 原生功能
 - `include`: 引入外部文件，模块化
 
----
 
 ## 任务定义完整对照
 
@@ -335,4 +326,3 @@ A:
 | `only` | 触发条件 | `merge_requests` | `merge_requests` |
 | `variables` | 变量过滤 | `target == "uat"` | `target == "master"` |
 
----
