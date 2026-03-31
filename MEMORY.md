@@ -465,4 +465,36 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-03-30*
+## 📝 今日修改记录 (2026-03-31)
+
+1. **GitLab + SonarQube 重新部署**
+   - 完成 GitLab 和 SonarQube 重新搭建
+
+2. **SFTP 连接问题排查**
+   - 问题：43 服务器 SFTP 连接失败
+   - 原因：文件权限问题
+
+3. **日常运维协助**
+   - MinIO 建桶
+   - MySQL 建库
+   - 更新 jq、yhb 证书
+   - 50 服务器重建 RAID 阵列
+
+4. **RocketMQ 集群迁移（50 → 53）**
+   - 旧集群：192.168.0.50（namesrv + broker-a）+ 192.168.0.180（namesrv + broker-b）
+   - 新增节点：192.168.0.53（broker-c）
+   - broker-c 启动后 `ACTIVATED: false`，可能与旧 broker 冲突有关
+   - mqadmin ACL 2.0 认证参数格式不同于旧版
+   - 需完全停止旧节点 broker 才能解决激活问题
+
+5. **OpenClaw 飞书渠道接入**
+   - App ID: cli_a940fd38533adcba（国内版）
+   - 完成用户配对授权
+
+6. **MCP 协议研究**
+   - MCP（Model Context Protocol）可对接 Prometheus 实现 AI 智能运维监控
+   - 生成可行性分析文档上传至 GitHub
+
+---
+
+*最后更新：2026-03-31*
