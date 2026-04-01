@@ -75,6 +75,11 @@
 - 合并条件：MR 状态 `opened` + `can_be_merged` 为 true
 - CI 配置：添加 `MERGE_TOKEN` 变量，使用 curl + jq 执行
 
+**SonarQube JaCoCo 覆盖率配置**
+- Maven 命令：`mvn clean test jacoco:report`
+- 核心参数：`sonar.java.binaries=target/classes` + `sonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml`
+- **关键注意**：不能使用 `-Dmaven.test.skip=true`，会跳过测试导致无法生成覆盖率数据
+
 **Redis 集群水平扩容**
 - 添加节点步骤：创建目录 → 复制配置 → 启动实例 → 添加到集群 → 分配槽 → 添加从节点
 - Hash 槽迁移：`redis-cli -a <password> --cluster reshard <节点>`
@@ -142,6 +147,11 @@
     - 问题：直接读取 note.db 无法获取用户笔记
     - 原因：Trilium 使用 WAL 模式，用户笔记在 WAL 文件中
     - 解决：通过 Web 界面导出 root.zip 获取完整备份
+
+14. **SonarQube 覆盖率=0**
+    - 问题：GitLab CI 流水线 SonarQube 覆盖率始终为 0
+    - 原因：Maven 命令缺少 JaCoCo 相关参数
+    - 解决：添加 `-Dsonar.java.binaries=target/classes` 和 `-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml`，不能使用 `-Dmaven.test.skip=true`
 
 ### 经验教训
 
@@ -495,6 +505,62 @@ openclaw gateway restart
    - MCP（Model Context Protocol）可对接 Prometheus 实现 AI 智能运维监控
    - 生成可行性分析文档上传至 GitHub
 
+## 📝 今日修改记录 (2026-03-31)
+
+1. **GitLab + SonarQube 重新部署**
+   - 完成 GitLab 和 SonarQube 重新搭建
+
+2. **SFTP 连接问题排查**
+   - 问题：43 服务器 SFTP 连接失败
+   - 原因：文件权限问题
+
+3. **日常运维协助**
+   - MinIO 建桶
+   - MySQL 建库（10个业务库）
+   - 更新 jq、yhb 证书
+   - 50 服务器重建 RAID 阵列
+
+4. **RocketMQ 集群迁移（50 → 53）**
+   - 旧集群：192.168.0.50（namesrv + broker-a）+ 192.168.0.180（namesrv + broker-b）
+   - 新增节点：192.168.0.53（broker-c）
+   - broker-c 启动后 `ACTIVATED: false`，可能与旧 broker 冲突有关
+   - mqadmin ACL 2.0 认证参数格式不同于旧版
+   - 需完全停止旧节点 broker 才能解决激活问题
+
+5. **OpenClaw 飞书渠道接入**
+   - App ID: cli_a940fd38533adcba（国内版）
+   - 完成用户配对授权：ou_d733844335d7cf9c05c997e4c22d3976
+
+6. **MCP 协议研究**
+   - MCP（Model Context Protocol）可对接 Prometheus 实现 AI 智能运维监控
+   - 生成可行性分析文档上传至 GitHub
+
+7. **PostgreSQL 15 Docker 迁移**
+   - 从物理服务器迁移到 Docker 容器
+   - 19个业务库 + 角色权限 + PostGIS扩展
+   - 核心避坑：locale缺失、PostGIS缺失、数据残留、权限冲突
+
 ---
 
-*最后更新：2026-03-31*
+*最后更新：2026-04-01*
+
+## 📝 今日修改记录 (2026-04-01)
+
+1. **npm axios 供应链投毒安全检查**
+   - npm 顶流依赖 axios 1.14.1 和 0.30.4 被撤架
+   - 检查工作区所有扩展：qqbot/slack/feishu 均使用安全版本 1.13.6 ✅
+   - 恶意文件检查（plain-crypto-js、ld.py、wt.exe）：均不存在 ✅
+
+2. **GitLab CI + SonarQube 覆盖率问题排查**
+   - 用户反馈：CI 流水线 SonarQube 覆盖率始终为 0
+   - 原因分析：Maven 命令缺少 JaCoCo 相关参数
+   - 解决方案：添加 `sonar.java.binaries` 和 `sonar.coverage.jacoco.xmlReportPaths` 参数
+   - 关键注意：不能使用 `-Dmaven.test.skip=true` 会跳过测试导致无覆盖率
+
+3. **每日学习总结机制**
+   - learnings/2026-04-01.md 生成完成
+   - 更新 MEMORY.md 长期记忆
+
+---
+
+*最后更新：2026-04-02*
