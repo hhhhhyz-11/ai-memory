@@ -34,6 +34,12 @@
 - 任务类型: `agentTurn` (isolated) 或 `systemEvent` (main)
 - **⚠️ payload 提示词不能写死日期**，要用动态描述如"读取昨天的日志"
 
+**钉钉日报 Webhook**
+- 地址: `https://oapi.dingtalk.com/robot/send?access_token=bf7c95320e0767168d3ad50bc3c5f354a0d40927b02c045286897a74e4c007a2`
+- 用途: 钉钉自定义机器人，用于自动发送日报
+- 脚本位置: `/root/.openclaw/workspace/scripts/dingtalk-daily-report.sh`
+- 日志目录: `/root/.openclaw/workspace/daily-log/`
+
 **SonarQube + GitLab CI**
 - 扫描 Java 项目需要 `sonar.java.binaries` 指定编译产物目录
 - Maven 编译和 Sonar 分析建议在同一 job 执行，避免分 stage 丢失 .class 文件
@@ -272,7 +278,8 @@
 ## 📁 重要路径
 
 - `/root/.openclaw/workspace/` - 工作空间根目录
-- `/root/.openclaw/workspace/memory/` - 每日日志
+- `/root/.openclaw/workspace/daily-log/` - **工作日志数据源**（统一）
+- `/root/.openclaw/workspace/memory/` - 备用/历史日志
 - `/root/.openclaw/workspace/learnings/` - 学习总结
 - `/root/.openclaw/workspace/MEMORY.md` - 长期记忆
 
@@ -563,4 +570,32 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-04-02*
+## 📝 今日修改记录 (2026-04-02)
+
+1. **钉钉日报自动推送功能部署**
+   - Webhook + Cron + AI 实现日报自动推送
+   - 周报/月报定时任务（周五14:00/每月倒数第2天14:00）
+   - 关键词触发：完成/搞定了/干完了/做好了/已经做完/搞完了
+   - 数据源：统一使用 daily-log/ 目录
+
+2. **OpenClaw Agent 大清理**
+   - 从 183 个 Agent 精简到 49 个，删除 134 个
+   - 保留：main + 30 个运维/工程技术 Agent
+   - 配置文件从 303KB 降至 85KB
+
+3. **openclaw browser 插件权限修复**
+   - 已在配置中添加 `plugins.allow: ["browser"]`
+   - Gateway 已重启，browser 命令可用
+
+4. **配置文件清理踩坑**
+   - 问题：清理 Agent 时整个 agents 配置写回，丢失部分历史字段
+   - 教训：修改配置前务必完整备份，批量清理要分步执行
+   - 状态：tools.exec 字段正确，其他配置（如 qqbot 扩展）可能丢失
+
+5. **待处理事项**
+   - Gateway 服务未安装：需执行 `openclaw gateway install` + `openclaw gateway start`
+   - qqbot 全局插件与内置插件冲突警告（不影响功能）
+
+---
+
+*最后更新：2026-04-03*
