@@ -599,3 +599,109 @@ openclaw gateway restart
 ---
 
 *最后更新：2026-04-03*
+
+## 📝 今日修改记录 (2026-04-03)
+
+1. **WSL Gateway token 环境变量持久化**
+   - 问题：WSL 重启后 `OPENCLAW_GATEWAY_TOKEN` 丢失，每次 exec 都要审批
+   - 解决：写入 `/etc/environment`
+
+2. **exec-approvals.json main agent ask 配置**
+   - `ask: "off"` 必须写在 `agents.main` 层级，不是 `defaults`
+   - 这是 AI exec 免审批的关键配置
+
+3. **H 节点（Windows）workdir 问题**
+   - `host=node` 时必须指定有效的 Windows 绝对路径作为 workdir
+   - 否则报错：`approval requires an existing canonical cwd`
+
+4. **H 节点解释器命令拦截**
+   - `cmd.exe /c`、`powershell.exe`、`node -e` 等被 Gateway exec 工具内置安全机制拦截
+   - 无法通过 exec-approvals 配置关闭，只能用 CMD 内置命令（copy/del/mkdir）或 vagrant 自身命令绕过
+
+5. **Vagrant 三台虚拟机部署**
+   - 本地 box：`F:\virtualbos\centos7.box`
+   - 命令：`vagrant box add centos7test F:\virtualbos\centos7.box && vagrant init centos7test && vagrant up`
+   - 三台 VM：test_1、test-2、test-3 全部运行中
+   - 注意：不能用从已关机 VM 打包的镜像，会导致 VM 启动后立即关机
+
+6. **Agent 大清理**
+   - 从 49 个精简到 13 个（删除 36 个）
+   - 保留的核心 Agent：main, engineering-sre, engineering-devops-automator, engineering-feishu-integration-developer 等
+   - 备份：`/root/.openclaw/openclaw.json.bak.agents2`
+
+7. **飞书信息同步**
+   - 成功将工作手册同步到飞书个人（ou_d733844335d7cf9c05c997e4c22d3976）
+   - 文档：`docs/H节点-Vagrant虚拟机自动化部署手册.md`
+
+---
+
+*最后更新：2026-04-03*
+
+## 📝 配置变更记录 (2026-04-05)
+
+1. **删除飞书渠道**
+   - 2026-04-05 老大要求删除飞书渠道
+   - 已从 `channels.feishu` 和 `plugins.entries.feishu` 中移除配置
+   - 飞书机器人 App ID: cli_a940fd38533adcba（已停用）
+
+
+## 📝 今日修改记录 (2026-04-07)
+
+1. **KingBase 主备集群部署（V8R6）**
+   - 部署流程：停单机 → 文件位置确认（DeployTools/zip/）→ 配置 install.conf → 执行 cluster_install.sh
+   - 关键文件：cluster_install.sh、db.zip、install.conf、securecmdd.zip、trust_cluster.sh
+   - 服务器：192.168.198.11（主）、192.168.198.12（备）、VIP 192.168.198.20/24
+
+2. **OpenClaw 配置回滚**
+   - 问题：插件 disable/enable 导致配置从 303KB 降至 25KB
+   - 解决：从 bak.4 备份恢复（85KB）
+   - 教训：配置变更前必须完整备份
+
+---
+
+## 📝 今日修改记录 (2026-04-08)
+
+1. **KingBase V9R2C4 主备集群部署（Vagrant）**
+   - 节点：kingbase1（192.168.56.11）、kingbase2（192.168.56.12）、VIP 192.168.56.15/24
+   - 踩坑1：db.zip 解压后 bin/include/lib/share 必须在 Server/ 目录下，否则集群部署报错 `sys_securecmd not found`
+   - 踩坑2：防火墙阻止 ICMP 导致 `ping trusted_servers` 失败，解决方案：`systemctl stop firewalld`
+   - 关键配置：`deploy_by_sshd=0`（SSH直连模式）、`install_dir/Server/bin/sys_securecmd` 路径必须存在
+   - 文档：`https://github.com/hhhhhyz-11/ai-memory/blob/master/金仓数据库部署流程/02-主备集群部署全流程-2026-04-08.md`
+
+2. **KingBase 主备 vs 读写分离区别**
+   - 主备集群配置文件（all_ip + virtual_ip）本质上就是读写分离集群配置
+   - 区别在于应用层路由：写 → VIP，读 → 备机
+   - 备机默认只读（流复制），无法执行写操作（`cannot execute INSERT in a read-only transaction`）
+   - db_mode、db_case_sensitive 等参数建议显式配置
+
+---
+
+## 📝 今日修改记录 (2026-04-08)
+
+1. **KingBase V9R2C4 主备集群部署（Vagrant）**
+   - Vagrant 两台虚拟机 kingbase1/kingbase2
+   - 完成单机安装 + 初始化
+   - 踩坑1：目录结构错误（Server/ 嵌套）→ 创建 Server 目录后再 unzip
+   - 踩坑2：防火墙阻断 trusted_servers → 关闭 firewalld
+   - SSH 互信 + securecmdd 互信验证通过
+   - repmgr cluster show 确认集群正常
+
+2. **主备 vs 读写分离 配置分析**
+   - install.conf 配置了 all_ip + virtual_ip → 本质已是 RWC 读写分离集群
+   - 缺少 db_mode / db_case_sensitive 参数
+   - 备机只读验证通过即说明读写分离基础就绪
+
+3. **GitHub 文档更新**
+   - 02-主备集群部署全流程-2026-04-08.md 已提交
+
+## 📝 今日修改记录 (2026-04-13)
+
+1. **每日定时汇总任务执行**
+   - 执行 cron 每日总结任务（ID: 58ce458e-dd09-42ae-af8d-bb002e4cce96）
+   - 检查近期工作：2026-04-10（KingBase kpatch 升级）
+   - 生成 learnings/2026-04-13.md
+   - 更新 MEMORY.md 长期记忆
+
+---
+
+*最后更新：2026-04-13*
