@@ -1,0 +1,62 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos7"
+  config.vm.box_url = "file:///F:/virtualbos/centos7.box"
+
+  # 生成 SSH 密钥用于节点间免密
+  config.vm.provision "shell", inline: <<-SHELL
+    # 允许密码认证和 root 登录
+    sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+    systemctl restart sshd
+
+    # 创建 hyz 用户
+    useradd -m hyz
+    echo "hyz:123456" | chpasswd
+
+    # 配置 hyz 的 sudo 权限（正确方式：使用 visudo）
+    echo "hyz ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/hyz
+    chmod 440 /etc/sudoers.d/hyz
+
+    # 生成 hyz 的 SSH 密钥
+    su - hyz -c "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
+    su - hyz -c "ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa"
+    su - hyz -c "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
+    su - hyz -c "chmod 600 ~/.ssh/authorized_keys"
+  SHELL
+
+  # KingBase 1
+  config.vm.define "kingbase1" do |node1|
+    node1.vm.hostname = "kingbase1"
+    node1.vm.network "private_network", ip: "192.168.56.11"
+    node1.vm.synced_folder "F:/virtualbos/", "/vagrant"
+    node1.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 1
+    end
+  end
+
+  # KingBase 2
+  config.vm.define "kingbase2" do |node2|
+    node2.vm.hostname = "kingbase2"
+    node2.vm.network "private_network", ip: "192.168.56.12"
+    node2.vm.synced_folder "F:/virtualbos/", "/vagrant"
+    node2.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 1
+    end
+  end
+
+  # KingBase 3
+  config.vm.define "kingbase3" do |node3|
+    node3.vm.hostname = "kingbase3"
+    node3.vm.network "private_network", ip: "192.168.56.13"
+    node3.vm.synced_folder "F:/virtualbos/", "/vagrant"
+    node3.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 1
+    end
+  end
+end

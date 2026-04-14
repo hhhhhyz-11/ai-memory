@@ -1,0 +1,215 @@
+# KingbaseES V9R2C4 单机部署全流程
+
+> 部署时间：2026-04-07
+> 版本：V009R002C014B0009
+
+---
+
+## 一、环境信息
+
+| 项目 | 值 |
+|------|-----|
+| 安装目录 | /home/kingbase |
+| 数据目录 | /home/kingbase/data |
+| 实例名称 | kingbase-master |
+| 端口 | 54321 |
+| 管理员 | system / kingbase |
+| 安全管理员 | sso |
+| 兼容模式 | oracle |
+| 字符集 | utf8 |
+| 区域 | zh_CN.utf8 |
+| 大小写敏感 | 敏感 |
+| 块大小 | 8kB |
+| 认证方法 | scram-sha-256 |
+
+---
+
+## 二、部署流程
+
+### 0. 检查/设置服务器语言（重要！）
+
+```bash
+# 查看服务器当前语言
+echo $LANG
+
+# 如果显示的是 zh_CN，则安装程序会显示中文内容
+# 如果不是，可以执行以下命令设置
+export LANG=zh_CN.UTF-8
+
+# 建议将语言设置写入 /etc/profile 确保持久化
+echo "export LANG=zh_CN.UTF-8" >> /etc/profile
+source /etc/profile
+```
+
+**说明：** 安装程序界面语言由 LANG 环境变量决定，设置 zh_CN.UTF-8 可确保显示中文，避免因编码问题导致安装界面乱码。
+
+### 1. 创建用户（root）
+
+```bash
+groupadd kingbase
+useradd -g kingbase -m -d /home/kingbase -s /bin/bash kingbase
+echo "kingbase:kingbase" | chpasswd
+id kingbase
+```
+
+### 2. 挂载 ISO
+
+```bash
+cd /home/Kingbase/ES/V9
+mount KingbaseES_V009R002C014B0009_Lin64_install.iso .
+ls
+# setup  setup.sh
+```
+
+### 3. 执行安装（kingbase 用户）
+
+```bash
+su - kingbase
+export LANG=zh_CN.UTF-8
+cd /home/Kingbase/ES/V9
+sh setup.sh -i console
+```
+
+**安装过程：**
+- 协议：输入 `1` 接受
+- License 文件：`/home/license/license.dat`
+- 安装路径：`/home/kingbase`（非默认）
+- 安装集：`1` 完全安装
+- 快捷方式：`N` 否
+
+### 4. 初始化数据库
+
+```bash
+# kingbase 用户执行
+/home/kingbase/Server/bin/kconsole.sh --cli
+```
+
+**初始化步骤：**
+1. 选择 `1` 创建数据库实例
+2. 实例名称：`kingbase`
+3. 端口：`54321`（默认）
+4. 管理员：`system`（默认）
+5. 管理员密码：`kingbase`
+6. 数据目录：`/home/kingbase/data`
+7. 日志目录：`/home/kingbase/data/sys_log`（默认）
+8. 兼容模式：`1` oracle
+9. 大小写敏感：`1` 敏感
+10. 字符集：`2` utf8
+11. 区域：`1` zh_CN.utf8
+12. 块大小：`1` 8kB（默认）
+13. 认证方法：`1` scram-sha-256（默认）
+14. 审计管理员：`no`（默认）
+15. 安全管理员：`y` 开启 或 `n` 关闭（按需）
+16. 立即启动：`yes`（默认）
+17. 确认：`y`
+
+### 5. 添加系统服务（root）
+
+```bash
+/home/kingbase/.kconsole/add_service_kingbase-master.sh
+```
+
+### 6. 创建物理备份
+
+```bash
+/home/kingbase/KESRealPro/V009R002C014/Server/bin/sys_backup.sh
+# 配置文件：
+/home/kingbase/KESRealPro/V009R002C014/Server/share/sys_backup.conf
+```
+
+---
+
+## 三、部署后验证
+
+### 检查进程
+
+```bash
+ps -ef | grep kingbase
+```
+
+### 检查端口
+
+```bash
+netstat -tlnp | grep 54321
+```
+
+### 连接数据库
+
+```bash
+# 本地连接
+/home/kingbase/Server/bin/ksql -U system -d test
+
+# 远程连接
+/home/kingbase/Server/bin/ksql -U system -d test -h <IP> -p 54321
+```
+
+### 管理命令
+
+```bash
+# 启动
+/home/kingbase/Server/bin/sys_ctl -D /home/kingbase/data start
+
+# 停止
+/home/kingbase/Server/bin/sys_ctl -D /home/kingbase/data stop -m fast
+
+# 重启
+/home/kingbase/Server/bin/sys_ctl -D /home/kingbase/data restart
+
+# 查看状态
+/home/kingbase/Server/bin/sys_ctl -D /home/kingbase/data status
+```
+
+---
+
+## 四、目录结构
+
+```
+/home/
+├── kingbase/                      # 安装目录
+│   ├── data/                      # 数据目录
+│   │   └── sys_log/              # 日志目录
+│   ├── KESRealPro/V009R002C014/  # 程序目录
+│   │   ├── Server/              # 数据库服务器
+│   │   ├── KingbaseHA/          # 高可用组件
+│   │   ├── Interface/           # 接口
+│   │   ├── ClientTools/         # 客户端工具
+│   │   └── install/             # 引导组件
+│   └── .kconsole/               # 管理工具
+│       └── add_service_*.sh     # 服务脚本
+├── Kingbase/ES/V9/              # ISO挂载目录
+│   ├── setup.sh                 # 安装脚本
+│   └── setup/                   # 安装程序
+└── license/
+    └── license.dat             # 授权文件
+```
+
+---
+
+## 五、⚠️ 注意事项
+
+1. **安装用户**：安装程序必须用 `kingbase` 用户执行，不能用 root
+2. **物理备份**：部署完成后必须创建物理备份，未备份可能导致数据丢失
+3. **安全管理员**：按需开启，默认关闭
+4. **防火墙**：生产环境需开放 54321 端口
+5. **语言设置**：安装前务必检查 LANG 环境变量，避免界面乱码
+
+---
+
+## 六、常见问题
+
+### 安装报错：bad ELF interpreter
+```bash
+yum install glibc.i686 libstdc++.i686 -y
+```
+
+### 连接报错：Connection refused
+- 检查端口：`netstat -tlnp | grep 54321`
+- 检查 `kingbase.conf` 中 `listen_addresses`
+
+### 共享内存不足
+```bash
+vim /etc/sysctl.conf
+# kernel.shmmax = 68719476736
+# kernel.shmall = 4294967296
+sysctl -p
+```
