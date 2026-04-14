@@ -53,6 +53,7 @@
 | 8 | Jenkins DingTalk text 类型 | 传 `List<String>`，不用 `.join('')` |
 | 9 | kpatch 升级路径包含 KESRealPro | `-k` 参数用软链接路径 |
 | 10 | KingBase kpatch 需先启动数据库 | 否则报 `kingbase not running` |
+| 11 | KingBase PID 文件残留 | `kingbase.pid already exists`，先 stop 再 start |
 
 ### 经验教训
 
@@ -100,4 +101,44 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-04-13*
+*最后更新：2026-04-14*
+
+### SonarQube Issues 批量导出方案
+
+**问题**：SonarQube 页面导出 PDF 超过 10000 条限制
+
+**解决方案**：
+1. SonarQube 导出 Protobuf 格式 → 生成 .zip
+2. 用 Java 工具（SonarPbToCsvConverter）将 Protobuf 转 CSV
+3. Jenkins Pipeline 调用 shell 脚本自动化整个流程
+4. Nginx 搭建文件服务器提供下载
+
+**完整流程**：
+- 手动导出项目 Protobuf → Jenkins 执行脚本 → 解压 → 转 CSV → 输出下载链接
+
+### OpenClaw Browser (WSL2 / Chrome) 问题
+
+**现象：** `openclaw browser start` → "Chrome CDP websocket not reachable"
+
+**排查结论：**
+- Chrome 手动在 WSL2 里能正常跑（HTTP 200 + WebSocket 通）
+- OpenClaw launch Chrome 时会先做 bootstrap（预启动生成 preferences），然后 SIGTERM 杀掉再启动正式实例
+- WSL2 环境下 Chrome fork 后父进程退场会导致子进程同步退出（即使 `--no-sandbox` 已设）
+- SSRF 策略默认阻止 127.0.0.1，`browser.ssrfPolicy.allowPrivateNetwork: true` 可修复
+
+**修复方法：**
+```json
+"browser": {
+  "ssrfPolicy": { "allowPrivateNetwork": true }
+}
+```
+
+**已测试有效的手动 Chrome 启动参数（WSL2）：**
+```bash
+google-chrome-stable \
+  --headless=new --disable-gpu --no-sandbox --disable-setuid-sandbox \
+  --disable-dev-shm-usage --remote-debugging-address=127.0.0.1 \
+  --remote-debugging-port=18800 --user-data-dir=~/.openclaw/browser/openclaw/user-data
+```
+
+**根本原因：** 可能是 WSL2 特有进程管理问题 + OpenClaw bootstrap 的 SIGTERM 时序竞争
