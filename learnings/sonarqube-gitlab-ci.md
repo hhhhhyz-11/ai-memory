@@ -102,12 +102,20 @@ build-and-sonar:
   stage: build
   image: maven:3.9.6-eclipse-temurin-11
   script:
-    - mvn -B --no-transfer-progress -T 2C clean package sonar:sonar -DskipTests -Dmaven.test.skip=true -Dsonar.projectKey=bike-server-master -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.sourceEncoding=UTF-8 -Dsonar.java.binaries=target/classes -Dsonar.exclusions=**/target/**,**/test/**,**/resources/** 
+    - mvn -B --no-transfer-progress -T 2C clean package sonar:sonar \
+      -DskipTests \
+      -Dmaven.test.skip=true \
+      -Dsonar.projectKey=bike-server-master \
+      -Dsonar.host.url=$SONAR_HOST_URL \
+      -Dsonar.login=$SONAR_TOKEN \
+      -Dsonar.sourceEncoding=UTF-8 \
+      -Dsonar.java.binaries=target/classes \
+      -Dsonar.exclusions=**/target/**,**/test/**,**/resources/**
   when: manual
   only:
     - master
 
-```
+> ⚠️ **重要经验**：不要拆分 build 和 sonar 为多个 stage，sonar 阶段需要 target/classes 编译产物；sonar.java.binaries 必须指定；推荐 -T 2C 并行编译；若要覆盖率数据，不要用 -Dmaven.test.skip=true```
 
 ### 配置说明
 

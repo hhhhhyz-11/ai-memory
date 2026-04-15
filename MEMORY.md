@@ -17,12 +17,15 @@
 
 ### 技术知识
 
-**OpenClaw Gateway**
-- bind 模式: `custom` + `customBindHost: "0.0.0.0"` 可允许外部连接
-- 端口: 18789
-- Token 认证: `OPENCLAW_GATEWAY_TOKEN` 环境变量
-- 节点配对命令: `openclaw devices approve <requestId>`
-- 外部 ws:// 连接需要 `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1`
+**sys_dump 备份导出**
+- 导出整个数据库：`./sys_dump -U system -W -d test -f test_backup.sql`
+- 导出指定表：`-t my_schema.my_table`
+- 只导出表结构：`-s`
+- 只导出数据：`-a`
+
+**OpenClaw Browser**
+- 当前版本 `browser` 子命令不支持 `install` 参数
+- 使用 H 节点 Chrome 解决自动化问题
 
 **钉钉日报 Webhook**
 - 地址: `https://oapi.dingtalk.com/robot/send?access_token=bf7c95320e0767168d3ad50bc3c5f354a0d40927b02c045286897a74e4c007a2`
@@ -54,6 +57,8 @@
 | 9 | kpatch 升级路径包含 KESRealPro | `-k` 参数用软链接路径 |
 | 10 | KingBase kpatch 需先启动数据库 | 否则报 `kingbase not running` |
 | 11 | KingBase PID 文件残留 | `kingbase.pid already exists`，先 stop 再 start |
+| 12 | RocketMQ 5.x ACL 2.0 认证 | mqadmin 参数格式不同于旧版 |
+| 13 | RocketMQ broker-c ACTIVATED false | ACL 2.0 配置可能未完全生效 |
 
 ### 经验教训
 
@@ -63,6 +68,8 @@
 - **语言环境** `en_US.UTF-8` 必须匹配
 - **Trilium 备份** 需导出 root.zip，不能直接读 DB
 - **MySQL 从库与 MinIO 共盘** 会导致复制延迟
+- **sys_dump 导出** 用 `-U system -W` 认证，指定 `-f` 输出文件
+- **RocketMQ 5.x** ACL 2.0 认证参数格式有变化
 
 ## 👤 关于用户
 
@@ -101,7 +108,7 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-04-14*
+*最后更新：2026-04-15*
 
 ### SonarQube Issues 批量导出方案
 
