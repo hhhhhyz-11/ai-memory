@@ -42,6 +42,24 @@
 - 下线节点: 先迁移槽，再 `del-node`
 - 懒卸载 NFS: `umount -l`
 
+**MinIO 对象存储**
+- 端口: 9001 是 Console 端口，9000 是 API 端口
+- 访问: 使用 9000 端口进行 API 操作
+- Bucket 权限: 需要设置公开访问或使用 policy
+
+**GitLab CI 变量**
+- `SONAR_UAT` - UAT 项目 Sonar Token
+- `SONAR_MASTER` - Master 项目 Sonar Token
+- `MERGE_TOKEN` - GitLab PAT
+- `DINGTALK_WEBHOOK` - 钉钉 Webhook
+- `MINIO_ACCESS_KEY` / `MINIO_SECRET_KEY` - MinIO 凭证
+
+**工程控制论**
+- 钱学森是我国航天事业重要奠基人
+- 上世纪50年代提出工程控制论
+- 研究控制理论在工程实践中的应用
+- 涉及系统调控、信息传递、反馈原理
+
 ### 踩坑记录（摘要）
 
 | # | 问题 | 关键解决 |
@@ -49,7 +67,7 @@
 | 1 | gateway bind 模式 | `custom` + `customBindHost` 而非 `lan` |
 | 2 | 节点配对命令 | `devices approve` 而非 `nodes approve` |
 | 3 | GitLab 升级后克隆地址变容器ID | 修改 external_url |
-| 4 | GitLab CI/CD 500 | 清空 ci_variables + tokens |
+| 4 | GitLab CI/CD 500 | 清空 ci_variables + tokens（DELETE FROM ci_variables; 清空 runners_token 等） |
 | 5 | Nginx proxy_pass 404 | 去掉尾部斜杠 |
 | 6 | SonarQube 覆盖率=0 | 加 JaCoCo 参数，不用 `-Dmaven.test.skip=true` |
 | 7 | MySQL 8 密码报错 | 用 `ALTER USER`，不用 `SET PASSWORD` |
@@ -59,6 +77,9 @@
 | 11 | KingBase PID 文件残留 | `kingbase.pid already exists`，先 stop 再 start |
 | 12 | RocketMQ 5.x ACL 2.0 认证 | mqadmin 参数格式不同于旧版 |
 | 13 | RocketMQ broker-c ACTIVATED false | ACL 2.0 配置可能未完全生效 |
+| 14 | 定时任务提示词写死日期 | 0点执行应改为"读取昨天日志" |
+| 15 | GitLab CI + SonarQube 分 stage 无.class | 合并为单一 job |
+| 16 | SonarQube 导出超10000条 | 用 Protobuf 导出 + Java 工具转 CSV |
 
 ### 经验教训
 
@@ -108,7 +129,7 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-04-15*
+*最后更新：2026-04-16*
 
 ### SonarQube Issues 批量导出方案
 

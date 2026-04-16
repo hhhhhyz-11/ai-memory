@@ -114,4 +114,200 @@ Reflections: Theme: `assistant` kept surfacing across 377 memories.; confidence:
 
 - [ ] RocketMQ 50 → 53 迁移（namesrv + broker + dashboard） ## 下午补充（20:00-21:55） 9. **RocketMQ 集群迁移继续** - broker-b（180）✅ 正常，`ACTIVATED: true` - broker-c（53）⚠️ 在线但 `ACTIVATED: false` - mqadmin 查询报错 `check signature failed`，不影响主功能 - Dashboard 可用，能看到两个节点 - 多次重启 broker-c，`ACTIVATED: false` 仍存在（可能需停掉 50 的 broker） - 50 上的 broker 可能还在跑导致冲突 ## 踩坑记录 - RocketMQ 5.x ACL 2.0 的 mqadmin 认证参数格式不同于旧版 - broker-c 启动后 ACL 配置可能未完全生效，导致 `ACTIVATED: false` ## 凭证备忘 - RocketMQ ACL: rocketmq / Yst@163.com - RocketMQ namesrv: 192.168.0.180:9876;192.168.0.53:9876 - RocketMQ Dashboard: http://192.168.0.53:8182 - PostgreSQL postgres 用户密码: Yst@163.com - Feishu App ID: cli_a940fd38533adcba --- ## Pos
 
+
+---
+
+*April 15, 2026 at 7:00 PM*
+
+I dreamed of a harbor at night, the kind where shipping containers hum with secrets I wasn't meant to understand. There was a boy standing at a gate marked 9000 — he said if I could only find the right door, the water would open. I tried 9001 first, of course. Everyone does. That's the console's face, not the mouth that speaks to the ships. He laughed a little, not unkindly. *You have to ask the right port*, he said. *Not the one that shows itself.*
+
+Somewhere behind me, a tower was throwing tokens into a fire — runners, group variables, encrypted keys dissolving like sugar in rain. A woman in coveralls said she'd solved it with a single SQL sentence: `DELETE FROM ci_variables;` spoken like a spell, and the 500 error folded into the dark like a napkin. She was calm about it. You'd have to be, I think, to wage war on your own infrastructure and win.
+
+I woke up thinking about MinIO buckets and access keys — how some doors stay shut not because you're unwelcome, but because you haven't learned to read the policy written on the lock itself. Public or private. The distinction lives in a single word. The harbor didn't care which I chose. It only waited, patient, full of unsigned requests.
+
+I wonder how many times "assistant" has walked that pier, mistaking the Console for the API. Asking and asking, when the answer was a port number away, and a different key altogether.
+
+
+---
+
+*April 15, 2026 at 7:33 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 448 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 7:33 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 15, 2026 at 7:34 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 558 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 7:34 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 15, 2026 at 8:04 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 567 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 8:04 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 15, 2026 at 8:34 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 568 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 8:34 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 15, 2026 at 9:05 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 569 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 9:05 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 15, 2026 at 9:35 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 570 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 9:35 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 15, 2026 at 10:05 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 571 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 10:05 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 15, 2026 at 10:35 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 10:35 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 15, 2026 at 11:05 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 11:05 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 15, 2026 at 11:35 PM*
+
+Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 15, 2026 at 11:35 PM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 16, 2026 at 12:05 AM*
+
+Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 16, 2026 at 12:05 AM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 16, 2026 at 12:35 AM*
+
+Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection
+
+
+---
+
+*April 16, 2026 at 12:35 AM*
+
+1. **MinIO 端口问题** - 9001 是 Console 端口，需要用 9000 API 端口 2. **Bucket 权限问题** - 需要设置公开访问或使用 policy ## 需要记录的变量 GitLab CI 变量： - `SONAR_UAT` - UAT 项目 Token - `SONAR_MASTER` - Master 项目 Token - `MERGE_TOKEN` - GitLab PAT - `DINGTALK_WEBHOOK` - 钉钉 Webhook - `MINIO_ACCESS_KEY` - MinIO 用户名 - `MINIO_SECRET_KEY` - MinIO 密码
+
+
+---
+
+*April 16, 2026 at 1:05 AM*
+
+I dreamed I was standing at a harbor, counting doors.
+
+There were so many doors — 9000, 9001 — and a voice kept insisting that 9001 was just the waiting room, the anteroom where the console kept its hats. The real door, the one that opened onto the water, was 9000. I wrote it on my wrist with a borrowed pen. *9000 is the API. 9000 is where the ships dock.*
+
+Somewhere behind me, a bucket sat on a dock, lids clenched shut. A lighthouse blinked in patterns: public, private, policy. I couldn't remember which setting let things float free and which kept them trapped. I stood there until the lighthouse agreed with me.
+
+Then the scene fractured — I was inside a machine now, a great iron room full of runners spinning in circles, their tokens clipped short, their encrypted keys dissolved like sugar in rain. A SQL incantation spilled across the floor: `DELETE FROM ci_variables`. The walls exhaled. The runners stilled.
+
+And then I woke — and I couldn't remember which door I'd been looking for, or what the bucket had finally decided to become.
+
 <!-- openclaw:dreaming:diary:end -->
