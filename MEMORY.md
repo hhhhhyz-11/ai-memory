@@ -140,7 +140,15 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-04-17*
+*最后更新：2026-04-18*
+
+### 2026-04-18 工作记录
+
+- **每日学习总结**：0点定时任务，处理 04-17 日志，提取技术内容到 learnings
+- **OpenClaw Heartbeat 机制**：分析心跳配置（默认30分钟，调整可用 `openclaw config set agents.defaults.heartbeat.every "2h"`）
+- **K8s 节点加入**：补全系统优化、SELinux 关闭、内核模块加载等
+
+---
 
 ### 2026-04-17 工作记录
 
