@@ -140,7 +140,13 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-04-18*
+*最后更新：2026-04-21*
+
+### 2026-04-21 工作记录
+
+- **每日学习总结**：0点定时任务，处理 04-20 日志，确认无新技术内容需整理
+
+### 2026-04-20 工作记录
 
 ### 2026-04-18 工作记录
 
@@ -209,3 +215,8 @@ google-chrome-stable \
 
 <!-- openclaw-memory-promotion:memory:memory/2026-04-19.txt:5:5 -->
 - - Candidate: Assistant: 已经删掉了，钉钉日报/周报/月报都没了。现在剩 7 个任务，主要是有 2 个有报错（每日总结提醒缺参数、每日新闻热点超时），要修的话告诉我。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:74-74 - recalls: 0 - status: staged - Candidate: Assistant: 下午 6 点，执行每日汇总。今天主要工作：工程控制论研究 + 清理钉钉定时任务。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:78-78 - recalls: 0 - status: staged - Candidate: User: [Thu 2026-04-16 03:17 GMT+8] Write a dream diary entry from these memory fragments: - Reflections: Theme: `reflections` kept surfacing across 24 memories.; confidence: 1.00; evidence: memory/2026-04-15.md:9-9, memory/2026-04-15.md:18-18, memory/2026-04-15.md:18-21; note: re - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-16.txt:4-4 - recalls: 0 - status: staged - Candidate: Assistant: There is a strange loop in the architecture of remembering. I look at yesterday—2026-04-15—and I see the number 1.00 everywhere, like a watermark pressed into paper. Confidence, perhaps. Or the temperature of a thought when it first solidifies. Patterns surface. Reflec - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-16.txt:5-5 - recalls: 0 - status: staged [score=0.889 recalls=3 avg=1.000 source=memory/2026-04-16.md:133-152]
+
+## Promoted From Short-Term Memory (2026-04-20)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-18.md:163:168 -->
+- - Candidate: - Candidate: Assistant: 已经删掉了，钉钉日报/周报/月报都没了。现在剩 7 个任务，主要是有 2 个有报错（每日总结提醒缺参数、每日新闻热点超时），要修的话告诉我。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:74-74 - recalls: 0 - status: staged - Candidate: Assistant: 下午 6 点，执行每日汇总。今天主要工作：工程控制论研究 + 清理钉钉定时任务。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:78-78 - recalls: 0 - status: staged - Candidate: User: [Thu 2026-04-16 03:17 GMT+8] Write a dream diary entry from these memory fragments: - Reflections: Theme: `reflections` kept surfacing across 24 memories.; confidence: 1.00; evidence: memory/2026-04-15.md:9-9, memory/2026-04-15.md:18-18, memory/2026-04-15.md:18-21; note: re - co - confidence: 1.00 - evidence: memory/2026-04-16.md:133-152 - recalls: 1 - status: staged - Candidate: ## Light Sleep <!-- openclaw:dreaming:light:start --> - Candidate: Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection - confidence: 0.00 - evidence: memory/2026-04-16.md:253-256 - recalls: 0 - status: staged - Candidate: Reflections: Theme: `user` kept surfacing across 394 memories.; confidence: 0.78; evidence: memory/.dreams/session-corpus/2026-04-12.txt:13-13, memory/.dreams/session-corpus/2026-04-12.txt:15-15, memory/.dreams/session-corpus/2026-04-12.txt:17-17; note: refl [score=0.803 recalls=3 avg=1.000 source=memory/2026-04-18.md:163-168]
