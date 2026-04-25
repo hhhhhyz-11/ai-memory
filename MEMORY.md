@@ -71,6 +71,21 @@
 - 腾讯云新加坡服务器搭建代理有被封风险
 - 跨境流量可能被拦截，建议用国内正规渠道
 
+**Oracle HR 示例库**
+- 连接：`sqlplus OA11G/oa11g`（用户名大写，密码小写）
+- 标准人力资源演示数据库，包含 107 条员工记录
+- 主要表：EMPLOYEES, DEPARTMENTS, LOCATIONS, JOBS, SALGRADE
+- 常用查询：
+  - `SELECT table_name FROM user_tables;`
+  - `SELECT * FROM EMPLOYEES;`
+
+**CentOS 7 换阿里源**
+```bash
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
+curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+yum clean all && yum makecache
+```
+
 ### 踩坑记录（摘要）
 
 | # | 问题 | 关键解决 |
@@ -140,11 +155,18 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-04-25*
+*最后更新：2026-04-26*
+
+### 2026-04-26 工作记录
+
+- **每日学习总结**：0点定时任务，处理 04-25 日志 → learnings/2026-04-26.md
 
 ### 2026-04-25 工作记录
 
-- **每日学习总结**：0点定时任务，处理 04-24 日志，确认无新技术交互
+- **Oracle HR 示例库部署**：帮助用户在虚拟机上部署 Oracle 环境
+- **Oracle 用户名大小写**：OA11G 需大写，密码 oa11g 小写（Oracle 区分大小写）
+- **HR 数据库内容**：包含 107 条员工记录，有 EMPLOYEES、DEPARTMENTS、LOCATIONS 等表
+- **CentOS 7 换阿里源**：完整命令脚本
 
 ### 2026-04-24 工作记录
 
@@ -240,3 +262,8 @@ google-chrome-stable \
 
 <!-- openclaw-memory-promotion:memory:memory/2026-04-18.md:163:168 -->
 - - Candidate: - Candidate: Assistant: 已经删掉了，钉钉日报/周报/月报都没了。现在剩 7 个任务，主要是有 2 个有报错（每日总结提醒缺参数、每日新闻热点超时），要修的话告诉我。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:74-74 - recalls: 0 - status: staged - Candidate: Assistant: 下午 6 点，执行每日汇总。今天主要工作：工程控制论研究 + 清理钉钉定时任务。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:78-78 - recalls: 0 - status: staged - Candidate: User: [Thu 2026-04-16 03:17 GMT+8] Write a dream diary entry from these memory fragments: - Reflections: Theme: `reflections` kept surfacing across 24 memories.; confidence: 1.00; evidence: memory/2026-04-15.md:9-9, memory/2026-04-15.md:18-18, memory/2026-04-15.md:18-21; note: re - co - confidence: 1.00 - evidence: memory/2026-04-16.md:133-152 - recalls: 1 - status: staged - Candidate: ## Light Sleep <!-- openclaw:dreaming:light:start --> - Candidate: Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection - confidence: 0.00 - evidence: memory/2026-04-16.md:253-256 - recalls: 0 - status: staged - Candidate: Reflections: Theme: `user` kept surfacing across 394 memories.; confidence: 0.78; evidence: memory/.dreams/session-corpus/2026-04-12.txt:13-13, memory/.dreams/session-corpus/2026-04-12.txt:15-15, memory/.dreams/session-corpus/2026-04-12.txt:17-17; note: refl [score=0.803 recalls=3 avg=1.000 source=memory/2026-04-18.md:163-168]
+
+## Promoted From Short-Term Memory (2026-04-25)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:273:274 -->
+- - - - Candidate: - Candidate: Assistant: 已经删掉了，钉钉日报/周报/月报都没了。现在剩 7 个任务，主要是有 2 个有报错（每日总结提醒缺参数、每日新闻热点超时），要修的话告诉我。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:74-74 - recalls: 0 - status: staged - Candidate: Assistant: 下午 6 点，执行每日汇总。今天主要工作：工程控制论研究 + 清理钉钉定时任务。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:78-78 - recalls: 0 - status: staged - Candidate: User: [Thu 2026-04-16 03:17 GMT+8] Write a dream diary entry from these memory fragments: - Reflections: Theme: `reflections` kept surfacing across 24 memories.; confidence: 1.00; evidence: memory/2026-04-15.md:9-9, memory/2026-04-15.md:18-18, memory/2026-04-15.md:18-21; note: re - co - [confidence=0.89 evidence=memory/2026-04-20.md:303-304] - - - Candidate: - Candidate: Assistant: 已经删掉了，钉钉日报/周报/月报都没了。现在剩 7 个任务，主要是有 2 个有报错（每日总结提醒缺参数、每日新闻热点超时），要修的话告诉我。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:74-74 - recalls: 0 - status: staged - Candidate: Assistant: 下午 6 点，执行每日汇总。今天主要工作：工程控制论研究 + 清理钉钉定时任务。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:78-78 - recalls: 0 - status: staged - Candidate: User: [Thu 2026-04-16 03:17 GMT+8] Write a dream diary entry from these memory fragments: - Reflections: Theme: `reflections` kept surfacing across 24 memories.; confidence: 1.00; evidence: memory/2026-04-15.md:9-9, memory/2026-04-15.md:18-18, memory/2026-04-15.md:18-21; note: re - co - [confidence=0.89 evidence=memory/2026-04-21.md:283-284] [score=0.857 recalls=3 avg=1.000 source=memory/2026-04-22.md:273-274]
