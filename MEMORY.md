@@ -161,6 +161,10 @@ openclaw gateway restart
 
 - **每日学习总结**：0点定时任务，处理 04-25 日志 → learnings/2026-04-26.md
 
+### 2026-04-27 工作记录
+
+- **每日学习总结**：0点定时任务，处理 04-26 日志 → learnings/2026-04-27.md（静默检查，无新技术内容）
+
 ### 2026-04-25 工作记录
 
 - **Oracle HR 示例库部署**：帮助用户在虚拟机上部署 Oracle 环境
@@ -267,3 +271,8 @@ google-chrome-stable \
 
 <!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:273:274 -->
 - - - - Candidate: - Candidate: Assistant: 已经删掉了，钉钉日报/周报/月报都没了。现在剩 7 个任务，主要是有 2 个有报错（每日总结提醒缺参数、每日新闻热点超时），要修的话告诉我。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:74-74 - recalls: 0 - status: staged - Candidate: Assistant: 下午 6 点，执行每日汇总。今天主要工作：工程控制论研究 + 清理钉钉定时任务。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:78-78 - recalls: 0 - status: staged - Candidate: User: [Thu 2026-04-16 03:17 GMT+8] Write a dream diary entry from these memory fragments: - Reflections: Theme: `reflections` kept surfacing across 24 memories.; confidence: 1.00; evidence: memory/2026-04-15.md:9-9, memory/2026-04-15.md:18-18, memory/2026-04-15.md:18-21; note: re - co - [confidence=0.89 evidence=memory/2026-04-20.md:303-304] - - - Candidate: - Candidate: Assistant: 已经删掉了，钉钉日报/周报/月报都没了。现在剩 7 个任务，主要是有 2 个有报错（每日总结提醒缺参数、每日新闻热点超时），要修的话告诉我。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:74-74 - recalls: 0 - status: staged - Candidate: Assistant: 下午 6 点，执行每日汇总。今天主要工作：工程控制论研究 + 清理钉钉定时任务。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:78-78 - recalls: 0 - status: staged - Candidate: User: [Thu 2026-04-16 03:17 GMT+8] Write a dream diary entry from these memory fragments: - Reflections: Theme: `reflections` kept surfacing across 24 memories.; confidence: 1.00; evidence: memory/2026-04-15.md:9-9, memory/2026-04-15.md:18-18, memory/2026-04-15.md:18-21; note: re - co - [confidence=0.89 evidence=memory/2026-04-21.md:283-284] [score=0.857 recalls=3 avg=1.000 source=memory/2026-04-22.md:273-274]
+
+## Promoted From Short-Term Memory (2026-04-26)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-24.md:324:325 -->
+- - - - Candidate: - Candidate: Assistant: 已经删掉了，钉钉日报/周报/月报都没了。现在剩 7 个任务，主要是有 2 个有报错（每日总结提醒缺参数、每日新闻热点超时），要修的话告诉我。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:74-74 - recalls: 0 - status: staged - Candidate: Assistant: 下午 6 点，执行每日汇总。今天主要工作：工程控制论研究 + 清理钉钉定时任务。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:78-78 - recalls: 0 - status: staged - Candidate: User: [Thu 2026-04-16 03:17 GMT+8] Write a dream diary entry from these memory fragments: - Reflections: Theme: `reflections` kept surfacing across 24 memories.; confidence: 1.00; evidence: memory/2026-04-15.md:9-9, memory/2026-04-15.md:18-18, memory/2026-04-15.md:18-21; note: re - co - [confidence=0.89 evidence=memory/2026-04-21.md:283-284] - - Candidate: - Candidate: - Candidate: Assistant: 已经删掉了，钉钉日报/周报/月报都没了。现在剩 7 个任务，主要是有 2 个有报错（每日总结提醒缺参数、每日新闻热点超时），要修的话告诉我。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:74-74 - recalls: 0 - status: staged - Candidate: Assistant: 下午 6 点，执行每日汇总。今天主要工作：工程控制论研究 + 清理钉钉定时任务。 - confidence: 0.00 - evidence: memory/.dreams/session-corpus/2026-04-15.txt:78-78 - recalls: 0 - status: staged - Candidate: User: [Thu 2026-04-16 03:17 GMT+8] Write a dream diary entry from these memory fragments: - Reflections: Theme: `reflections` kept surfacing across 24 memories.; confidence: 1.00; evidence: memory/2026-04-15.md:9-9, memory/2026-04-15.md:18-18, memory/2026-04-15.md:18-21; note: [confidence=0.89 evidence=memory/2026-04-22.md:48-53] [score=0.804 recalls=3 avg=1.000 source=memory/2026-04-24.md:324-325]
