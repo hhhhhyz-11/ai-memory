@@ -86,6 +86,14 @@ curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos
 yum clean all && yum makecache
 ```
 
+**Squid 代理 + VPN 出口部署**
+- Squid 监听内网：192.168.0.50:3128
+- 方式 B（推荐）：策略路由，只让 Squid 进程走 VPN LAN（192.168.0.34），服务器自身走防火墙（192.168.0.1）
+- systemd 服务需加 ExecStop 清理 iptables mangle 规则，否则重启后规则堆积
+- logrotate create 参数在 EL8+ 应为 `create 0640 squid adm`（不是 squid:squid）
+- VPN WAN/LAN 同段（192.168.0.33/34）有 ARP 扰风险，需监控
+- dns_nameservers 先不加，等确认 VPN LAN 提供 DNS 再加
+
 ### 踩坑记录（摘要）
 
 | # | 问题 | 关键解决 |
@@ -106,6 +114,8 @@ yum clean all && yum makecache
 | 14 | 定时任务提示词写死日期 | 0点执行应改为"读取昨天日志" |
 | 15 | GitLab CI + SonarQube 分 stage 无.class | 合并为单一 job |
 | 16 | SonarQube 导出超10000条 | 用 Protobuf 导出 + Java 工具转 CSV |
+| 17 | Session 堆积膨胀 | dreaming 超时重试无限制，新增 maintenance.maxEntries=200 |
+| 18 | 定时任务大章节超时 | cron 300s 限制，手动补发 |
 
 ### 经验教训
 
@@ -155,7 +165,16 @@ openclaw gateway restart
 
 ---
 
-*最后更新：2026-04-28*
+*最后更新：2026-04-30*
+
+### 2026-04-30 工作记录
+
+- **Session 堆积问题修复**：dreaming 超时重试导致 session 恶性膨胀（2558→1787）
+  - 禁用 dreaming → 清理 140 个 session → 删除 772 个 orphaned 文件
+  - 新增 maintenance.maxEntries=200 防止再次膨胀
+  - 归档 .dreams/ 旧文件，保留近 6 天数据
+- **小说连载 cron job**：每天 14:00 自动生成并发送到微信频道
+- **配置验证**：修改配置后执行 `openclaw doctor --fix` 验证
 
 ### 2026-04-28 工作记录
 
@@ -281,3 +300,15 @@ google-chrome-stable \
 
 <!-- openclaw-memory-promotion:memory:memory/2026-04-20.md:304:307 -->
 - - - Candidate: ## Light Sleep <!-- openclaw:dreaming:light:start --> - Candidate: Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection - confidence: 0.00 - evidence: memory/2026-04-16.md:253-256 - recalls: 0 - status: staged - Candidate: Reflections: Theme: `user` kept surfacing across 394 memories.; confidence: 0.78; evidence: memory/.dreams/session-corpus/2026-04-12.txt:13-13, memory/.dreams/session-corpus/2026-04-12.txt:15-15, memory/.dreams/session-corpus/2026-04-12.txt:17-17; note: [confidence=0.82 evidence=memory/2026-04-18.md:168-176] - - Candidate: ## Light Sleep <!-- openclaw:dreaming:light:start --> - Candidate: Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-corpus/2026-04-12.txt:2-2, memory/.dreams/session-corpus/2026-04-12.txt:3-3; note: reflection - confidence: 0.00 - evidence: memory/2026-04-16.md:253-256 - recalls: 0 - status: staged - Candidate: Reflections: Theme: `user` kept surfacing across 394 memories.; confidence: 0.78; evidence: memory/.dreams/session-corpus/2026-04-12.txt:13-13, memory/.dreams/session-corpus/2026-04-12.txt:15-15, memory/.dreams/session-corpus/2026-04-12.txt:17-17; note: [confidence=0.82 evidence=memory/2026-04-19.md:248-256] <!-- openclaw:dreaming:rem:end --> [score=0.932 recalls=4 avg=1.000 source=memory/2026-04-20.md:304-307]
+
+## Promoted From Short-Term Memory (2026-04-28)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-26.md:355:384 -->
+- - evidence: memory/2026-04-17.md:20-23 - recalls: 0 - status: staged - Candidate: 今日完成: **K8s 节点加入脚本**; 生成完整脚本：scripts/k8s-join-node.sh; 包含系统优化、内核模块加载等 - confidence: 0.62 - evidence: memory/2026-04-17.md:25-27 - recalls: 0 - status: staged - Candidate: Reflections: Theme: `heartbeat-ok` kept surfacing across 174 memories.; confidence: 0.98; evidence: memory/.dreams/session-corpus/2026-04-17.txt:4-4, memory/2026-04-16.md:88-109, memory/.dreams/session-corpus/2026-04-17.txt:5-5; note: reflection - confidence: 0.62 - evidence: memory/2026-04-25.md:308-311 - recalls: 0 - status: staged - Candidate: Reflections: Theme: `assistant` kept surfacing across 166 memories.; confidence: 0.94; evidence: memory/2026-04-15.md:228-231, memory/2026-04-16.md:253-256, memory/.dreams/session-corpus/2026-04-17.txt:2-2; note: reflection - confidence: 0.62 - evidence: memory/2026-04-25.md:312-315 - recalls: 0 - status: staged - Candidate: Reflections: Theme: `user` kept surfacing across 138 memories.; confidence: 0.78; evidence: memory/2026-04-16.md:257-260, memory/.dreams/session-corpus/2026-04-17.txt:1-1, memory/2026-04-17.md:292-295; note: reflection - confidence: 0.62 - evidence: memory/2026-04-25.md:316-319 - recalls: 0 - status: staged <!-- openclaw:dreaming:light:end --> ## REM Sleep <!-- openclaw:dreaming:rem:start --> ### Reflections - Theme: `assistant` kept surfacing across 203 memories. - confidence: 0.97 [score=0.909 recalls=4 avg=1.000 source=memory/2026-04-26.md:355-384]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-27.md:1:22 -->
+- ## Light Sleep <!-- openclaw:dreaming:light:start --> - Candidate: Reflections: Theme: `assistant` kept surfacing across 202 memories.; confidence: 0.96; evidence: memory/2026-04-15.md:228-231, memory/2026-04-16.md:253-256, memory/2026-04-18.md:333-336; note: reflection - confidence: 0.62 - evidence: memory/2026-04-27.md:363-366 - recalls: 0 - status: staged - Candidate: Reflections: Theme: `heartbeat-ok` kept surfacing across 184 memories.; confidence: 0.88; evidence: memory/.dreams/session-corpus/2026-04-19.txt:4-4, memory/2026-04-18.md:183-197, memory/.dreams/session-corpus/2026-04-19.txt:5-5; note: reflection - confidence: 0.62 - evidence: memory/2026-04-27.md:367-370 - recalls: 0 - status: staged - Candidate: Reflections: Theme: `user` kept surfacing across 163 memories.; confidence: 0.78; evidence: memory/2026-04-16.md:257-260, memory/2026-04-18.md:337-340, memory/.dreams/session-corpus/2026-04-19.txt:1-1; note: reflection - confidence: 0.62 - evidence: memory/2026-04-27.md:371-374 - recalls: 0 - status: staged - Candidate: Possible Lasting Truths: - - Candidate: ## Light Sleep <!-- openclaw:dreaming:light:start --> - Candidate: Reflections: Theme: `assistant` kept surfacing across 572 memories.; confidence: 1.00; evidence: memory/.dreams/session-corpus/2026-04-12.txt:1-1, memory/.dreams/session-cor - confidence: 0.62 - evidence: memory/2026-04-27.md:377-379 - recalls: 0 - status: staged [score=0.815 recalls=3 avg=1.000 source=memory/2026-04-27.md:1-22]
+
+## Promoted From Short-Term Memory (2026-04-29)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:273:275 -->
+- - status: staged [score=0.845 recalls=0 avg=0.620 source=memory/2026-04-22.md:257-257]

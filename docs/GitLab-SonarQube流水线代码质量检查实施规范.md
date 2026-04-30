@@ -318,6 +318,20 @@ merge-master:
 | 合并控制 | 质量门通过才允许合并 |
 | 分支管控 | feature/hotfix → uat → release → master |
 
+**效果图：**
+
+> 📸 **图1：GitLab MR 评论 — SonarQube 扫描结果自动同步**
+> ![GitLab MR SonarQube 评论](imgs/gitlab-mr-comment.png)
+
+> 📸 **图2：质量门拦截 — 流水线失败/合并被阻止**
+> ![质量门拦截](imgs/quality-gate-blocked.png)
+
+> 📸 **图3：SonarQube Web UI — 新增代码分析结果**
+> ![SonarQube 分析结果](imgs/sonarqube-result.png)
+
+> 📸 **图4：PDF 报告 — 浏览器打开效果**
+> ![PDF 报告](imgs/sonar-pdf-report.png)
+
 ### 4.3 质量门规则
 
 | 指标 | 阈值 | 说明 |
