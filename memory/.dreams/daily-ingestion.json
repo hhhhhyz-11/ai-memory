@@ -1,1 +1,21 @@
-{"version":1,"files":{}}
+{
+  "version": 1,
+  "files": {
+    "memory/2026-04-30.md": {
+      "mtimeMs": 1777530981627,
+      "size": 3145
+    },
+    "memory/2026-04-27.md": {
+      "mtimeMs": 1777230310268,
+      "size": 65102
+    },
+    "memory/2026-04-26.md": {
+      "mtimeMs": 1777143937695,
+      "size": 38520
+    },
+    "memory/2026-04-25.md": {
+      "mtimeMs": 1777057550237,
+      "size": 37589
+    }
+  }
+}
